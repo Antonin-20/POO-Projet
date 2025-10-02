@@ -1,0 +1,58 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ---- Environnements ----
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ---- Jupyter Notebook ----
+.ipynb_checkpoints
+*.ipynb_convert
+
+# ---- Distribution / packaging ----
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ---- Logs et fichiers temporaires ----
+*.log
+*.pot
+*.pyc
+*.pyo
+*.tmp
+*.swp
+*.swo
+
+# ---- Outils spécifiques ----
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
+# ---- Données lourdes (exemple à adapter) ----
+*.mkv
+*.mp4
+*.avi
+*.zip
+*.tar.gz
+*.h5
+*.pkl
+*.pdf
