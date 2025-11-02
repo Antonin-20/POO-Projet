@@ -1,0 +1,238 @@
+{
+  "rooms": [
+    {
+      "id": "entrance",
+      "name": "Entrance Hall",
+      "color": "BLUE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "images/rooms/Entrance_Hall.png",
+      "doors": ["N", "E", "W"],
+      "placement": { "border": 0 },
+      "loot": []
+    },
+    {
+      "id": "antechamber",
+      "name": "Antechamber",
+      "color": "BLUE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "images/rooms/Antechamber.png",
+      "doors": ["S", "E", "W"],
+      "placement": { "border": 0 },
+      "loot": []
+    },
+
+    {
+      "id": "spare_room",
+      "name": "Spare Room",
+      "color": "BLUE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "images/rooms/Spare_Room.png",
+      "doors": ["N", "S"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "key", "qty": { "min": 1, "max": 2 }, "p": 1 }
+      ]
+    },
+    {
+      "id": "closet",
+      "name": "Closet",
+      "color": "BLUE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "images/rooms/Closet.png",
+      "doors": ["S"],
+      "placement": { "border": 0 },
+      "loot": [
+        {
+          "type": "pool",
+          "take": 2,
+          "items": [
+            { "id": "die",            "qty": 1 },
+            { "id": "gem",            "qty": 1 },
+            { "id": "key",            "qty": 1 },
+            { "id": "lucky_paw",      "qty": 1 },
+            { "id": "metal_detector", "qty": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "walk_in_closet",
+      "name": "Walk-in Closet",
+      "color": "BLUE",
+      "rarity": 1,
+      "gem_cost": 1,
+      "image": "images/rooms/Walk-in_Closet.png",
+      "doors": ["S"],
+      "placement": { "border": 0 },
+      "loot": [
+        {
+          "type": "pool",
+          "take": 4,
+          "items": [
+            { "id": "cupcake",   "qty": 1 },
+            { "id": "die",       "qty": 2 },
+            { "id": "key",       "qty": { "min": 1, "max": 3 } },
+            { "id": "gem",       "qty": { "min": 1, "max": 2 } },
+            { "id": "lucky_paw", "qty": 1 },
+            { "id": "lockpick",  "qty": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "attic",
+      "name": "Attic",
+      "color": "BLUE",
+      "rarity": 3,
+      "gem_cost": 3,
+      "image": "images/rooms/Attic.png",
+      "doors": ["S"],
+      "placement": { "border": 0 },
+      "loot": [
+        {
+          "type": "pool",
+          "take": 8,
+          "items": [
+            { "id": "key",           "qty": { "min": 1, "max": 4 } },
+            { "id": "gem",           "qty": { "min": 1, "max": 4 } },
+            { "id": "lockpick",      "qty": 1 },
+            { "id": "metal_detector","qty": 1 }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "lavatory",
+      "name": "Lavatory",
+      "color": "RED",
+      "rarity": 1,
+      "gem_cost": 0,
+      "image": "images/rooms/Lavatory.png",
+      "doors": ["S"],
+      "placement": { "border": 0 },
+      "loot": []
+    },
+
+    {
+      "id": "terrace",
+      "name": "Terrace",
+      "color": "GREEN",
+      "rarity": 1,
+      "gem_cost": 0,
+      "image": "images/rooms/Terrace.png",
+      "doors": ["S"],
+      "placement": { "border": 3 },
+      "loot": [
+        {
+            "type": "pool",
+            "take": 1,
+            "items": [
+            { "id": "banana", "qty": 1, "p": 1 },
+            { "id": "orange", "qty": 1, "p": 1 },
+            { "id": "gem",    "qty": { "min": 1, "max": 2 }, "p": 1 }
+            ]
+        }
+      ]
+    },
+
+    {
+      "id": "cloister",
+      "name": "Cloister",
+      "color": "GREEN",
+      "rarity": 2,
+      "gem_cost": 3,
+      "image": "images/rooms/Cloister.png",
+      "doors": ["N", "S", "E", "W"],
+      "placement": { "border": 4 },
+      "loot": []
+    },
+    {
+      "id": "courtyard",
+      "name": "Courtyard",
+      "color": "GREEN",
+      "rarity": 1,
+      "gem_cost": 1,
+      "image": "images/rooms/Courtyard.png",
+      "doors": ["N", "S", "E", "W"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "metal_detector", "qty": 1, "p": 0.33 }
+      ]
+    },
+
+    {
+      "id": "hallway",
+      "name": "Hallway",
+      "color": "ORANGE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "images/rooms/Hallway.png",
+      "doors": ["S", "E", "W"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "apple", "qty": 1, "p": 0.5 },
+        { "id": "gem",   "qty": 1, "p": 0.5 }
+      ]
+    },
+    {
+      "id": "corridor",
+      "name": "Corridor",
+      "color": "ORANGE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "images/rooms/Corridor.png",
+      "doors": ["N", "S"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "apple", "qty": 1, "p": 0.5 },
+        { "id": "key",   "qty": 1, "p": 0.5 },
+        { "id": "gem",   "qty": 1, "p": 0.5 }
+      ]
+    },
+    {
+      "id": "passageway",
+      "name": "Passageway",
+      "color": "ORANGE",
+      "rarity": 0,
+      "gem_cost": 3,
+      "image": "images/rooms/Passageway.png",
+      "doors": ["N", "S", "E", "W"],
+      "placement": { "border": 4 },
+      "loot": []
+    },
+    {
+      "id": "west_wing_hall",
+      "name": "West Wing Hall",
+      "color": "ORANGE",
+      "rarity": 1,
+      "gem_cost": 0,
+      "image": "images/rooms/West_Wing_Hall.png",
+      "doors": ["S", "E", "W"],
+      "placement": { "border": 2 },
+      "loot": [
+        { "id": "apple", "qty": 1, "p": 0.5 },
+        { "id": "key",   "qty": 1, "p": 0.5 },
+        { "id": "die",   "qty": 2, "p": 0.5 }
+      ]
+    },
+    {
+      "id": "east_wing_hall",
+      "name": "East Wing Hall",
+      "color": "ORANGE",
+      "rarity": 2,
+      "gem_cost": 0,
+      "image": "images/rooms/East_Wing_Hall.png",
+      "doors": ["S", "E", "W"],
+      "placement": { "border": 1 },
+      "loot": [
+        { "id": "apple", "qty": 1, "p": 0.75 },
+        { "id": "key",   "qty": 1, "p": 0.75 }
+      ]
+    }
+  ]
+}
