@@ -6,7 +6,7 @@
       "color": "BLUE",
       "rarity": 0,
       "gem_cost": 0,
-      "image": "images/rooms/Entrance_Hall.png",
+      "image": "Images/rooms/Entrance_Hall.png",
       "doors": ["N", "E", "W"],
       "placement": { "border": 0 },
       "loot": []
@@ -17,7 +17,7 @@
       "color": "BLUE",
       "rarity": 0,
       "gem_cost": 0,
-      "image": "images/rooms/Antechamber.png",
+      "image": "Images/rooms/Antechamber.png",
       "doors": ["S", "E", "W"],
       "placement": { "border": 0 },
       "loot": []
@@ -29,7 +29,7 @@
       "color": "BLUE",
       "rarity": 0,
       "gem_cost": 0,
-      "image": "images/rooms/Spare_Room.png",
+      "image": "Images/rooms/Spare_Room.png",
       "doors": ["N", "S"],
       "placement": { "border": 0 },
       "loot": [
@@ -42,7 +42,7 @@
       "color": "BLUE",
       "rarity": 0,
       "gem_cost": 0,
-      "image": "images/rooms/Closet.png",
+      "image": "Images/rooms/Closet.png",
       "doors": ["S"],
       "placement": { "border": 0 },
       "loot": [
@@ -65,7 +65,7 @@
       "color": "BLUE",
       "rarity": 1,
       "gem_cost": 1,
-      "image": "images/rooms/Walk-in_Closet.png",
+      "image": "Images/rooms/Walk-in_Closet.png",
       "doors": ["S"],
       "placement": { "border": 0 },
       "loot": [
@@ -89,7 +89,7 @@
       "color": "BLUE",
       "rarity": 3,
       "gem_cost": 3,
-      "image": "images/rooms/Attic.png",
+      "image": "Images/rooms/Attic.png",
       "doors": ["S"],
       "placement": { "border": 0 },
       "loot": [
@@ -112,7 +112,7 @@
       "color": "RED",
       "rarity": 1,
       "gem_cost": 0,
-      "image": "images/rooms/Lavatory.png",
+      "image": "Images/rooms/Lavatory.png",
       "doors": ["S"],
       "placement": { "border": 0 },
       "loot": []
@@ -124,7 +124,7 @@
       "color": "GREEN",
       "rarity": 1,
       "gem_cost": 0,
-      "image": "images/rooms/Terrace.png",
+      "image": "Images/rooms/Terrace.png",
       "doors": ["S"],
       "placement": { "border": 3 },
       "loot": [
@@ -146,7 +146,7 @@
       "color": "GREEN",
       "rarity": 2,
       "gem_cost": 3,
-      "image": "images/rooms/Cloister.png",
+      "image": "Images/rooms/Cloister.png",
       "doors": ["N", "S", "E", "W"],
       "placement": { "border": 4 },
       "loot": []
@@ -157,7 +157,7 @@
       "color": "GREEN",
       "rarity": 1,
       "gem_cost": 1,
-      "image": "images/rooms/Courtyard.png",
+      "image": "Images/rooms/Courtyard.png",
       "doors": ["N", "S", "E", "W"],
       "placement": { "border": 0 },
       "loot": [
@@ -171,7 +171,7 @@
       "color": "ORANGE",
       "rarity": 0,
       "gem_cost": 0,
-      "image": "images/rooms/Hallway.png",
+      "image": "Images/rooms/Hallway.png",
       "doors": ["S", "E", "W"],
       "placement": { "border": 0 },
       "loot": [
@@ -185,7 +185,7 @@
       "color": "ORANGE",
       "rarity": 0,
       "gem_cost": 0,
-      "image": "images/rooms/Corridor.png",
+      "image": "Images/rooms/Corridor.png",
       "doors": ["N", "S"],
       "placement": { "border": 0 },
       "loot": [
@@ -200,7 +200,7 @@
       "color": "ORANGE",
       "rarity": 0,
       "gem_cost": 3,
-      "image": "images/rooms/Passageway.png",
+      "image": "Images/rooms/Passageway.png",
       "doors": ["N", "S", "E", "W"],
       "placement": { "border": 4 },
       "loot": []
@@ -211,7 +211,7 @@
       "color": "ORANGE",
       "rarity": 1,
       "gem_cost": 0,
-      "image": "images/rooms/West_Wing_Hall.png",
+      "image": "Images/rooms/West_Wing_Hall.png",
       "doors": ["S", "E", "W"],
       "placement": { "border": 2 },
       "loot": [
@@ -226,7 +226,7 @@
       "color": "ORANGE",
       "rarity": 2,
       "gem_cost": 0,
-      "image": "images/rooms/East_Wing_Hall.png",
+      "image": "Images/rooms/East_Wing_Hall.png",
       "doors": ["S", "E", "W"],
       "placement": { "border": 1 },
       "loot": [
