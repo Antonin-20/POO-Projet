@@ -231,5 +231,4 @@ class Jeu:
             self.clock.tick(30)
 
 
-if __name__ == "__main__":
-    Jeu().boucle_principale()
+
