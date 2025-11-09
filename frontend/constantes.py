@@ -1,0 +1,20 @@
+# --- Constantes globales ---
+NB_LIGNES = 9
+NB_COLONNES = 5
+MARGE = 2
+
+LARGEUR_GRILLE_FIXE = 400
+HAUTEUR_GRILLE_FIXE = 720
+
+LARGEUR_CASE = LARGEUR_GRILLE_FIXE // NB_COLONNES #400 // 5 = 80
+HAUTEUR_CASE = HAUTEUR_GRILLE_FIXE // NB_LIGNES #720 // 9 = 80
+
+"""A changer les couleurs"""
+COUL_FOND = (30, 30, 30) # Gris très foncé
+COUL_CASE = (80, 80, 80) # Gris moyen
+COUL_INVENTAIRE = (50, 50, 70) # Bleu grisâtre
+COUL_TEXTE = (255, 255, 255) # Blanc
+COUL_CHOIX = (100, 120, 200) # Bleu
+COUL_SELECTION = (255, 200, 100) # Jaune
+
+TAILLE_ICONE = 40
