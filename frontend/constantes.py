@@ -10,9 +10,9 @@ LARGEUR_CASE = LARGEUR_GRILLE_FIXE // NB_COLONNES #400 // 5 = 80
 HAUTEUR_CASE = HAUTEUR_GRILLE_FIXE // NB_LIGNES #720 // 9 = 80
 
 """A changer les couleurs"""
-COUL_FOND = (30, 30, 30) # Gris très foncé
-COUL_CASE = (80, 80, 80) # Gris moyen
-COUL_INVENTAIRE = (50, 50, 70) # Bleu grisâtre
+COUL_FOND = (42, 101, 161) # Gris très foncé
+COUL_CASE = (40, 99, 164) # Gris moyen
+COUL_INVENTAIRE = (42, 101, 161) # Bleu grisâtre
 COUL_TEXTE = (255, 255, 255) # Blanc
 COUL_CHOIX = (100, 120, 200) # Bleu
 COUL_SELECTION = (255, 200, 100) # Jaune
