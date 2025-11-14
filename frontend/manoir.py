@@ -23,32 +23,55 @@ class Manoir:
         self.grille[NB_LIGNES-1][2] = "antechamber"
 
 
-    def ajout_piece(self, surface, joueur, x_offset, y_offset):
-        # x_offset = 0 et y_offset = 90 dans la boucle principale
-        #HAUTEUR_CASE = 80, MARGE = 2, LARGEUR_CASE = 80
-        for i in range(NB_LIGNES): # de 0 à 8
-            for j in range(NB_COLONNES): # de 0 à 4
-                y = (NB_LIGNES - 1 - i) * HAUTEUR_CASE + y_offset + MARGE #position verticale de la case
-                x = j * LARGEUR_CASE + x_offset + MARGE #position horizontale de la case
-                
-                rect = pygame.Rect(x, y, LARGEUR_CASE - 2*MARGE, HAUTEUR_CASE - 2*MARGE) #rectangle de la case
-                pygame.draw.rect(surface, COUL_CASE, rect) #dessine la case
+    def ajout_piece(self, surface, joueur, x_offset=0, y_offset=0):
 
-                if i == 0 and j == 2:
+        largeur_fenetre, hauteur_fenetre = surface.get_size()
+
+        # On veut montrer la grille DU BAS VERS LE HAUT :
+        # ligne 0 = bas, ligne 8 = haut.
+        #
+        # On calcule un y_offset pour que tout soit visible et centré :
+        y_offset = (hauteur_fenetre - NB_LIGNES * HAUTEUR_CASE) // 2
+
+        for i in range(NB_LIGNES):
+            for j in range(NB_COLONNES):
+
+                # Conversion : ligne logique → position visuelle inversée
+                ligne_affichee = (NB_LIGNES - 1 - i)
+
+                x = j * LARGEUR_CASE + x_offset + MARGE
+                y = ligne_affichee * HAUTEUR_CASE + y_offset + MARGE
+
+                rect = pygame.Rect(
+                    x, y,
+                    LARGEUR_CASE - 2 * MARGE,
+                    HAUTEUR_CASE - 2 * MARGE
+                )
+
+                pygame.draw.rect(surface, COUL_CASE, rect)
+                pygame.draw.rect(surface, (255, 255, 255), rect, 1)
+
+                salle = self.grille[i][j]
+                if salle == "entrance":
                     surface.blit(self.entrance_img, (x + MARGE, y + MARGE))
-                elif i == NB_LIGNES - 1 and j == 2:
+                elif salle == "antechamber":
                     surface.blit(self.antechamber_img, (x + MARGE, y + MARGE))
 
-        # Calcul de la position du joueur
-        joueur_x = x_offset + joueur.colonne * LARGEUR_CASE + MARGE
-        joueur_y = y_offset + (NB_LIGNES - 1 - joueur.ligne) * HAUTEUR_CASE + MARGE
+        # --- Affichage du joueur ---
+        ligne_affichee = (NB_LIGNES - 1 - joueur.ligne)
 
-        # Création du rectangle du joueur
-        joueur_rect = pygame.Rect(joueur_x, joueur_y, LARGEUR_CASE - 2*MARGE, HAUTEUR_CASE - 2*MARGE)
+        joueur_x = joueur.colonne * LARGEUR_CASE + x_offset + MARGE
+        joueur_y = ligne_affichee * HAUTEUR_CASE + y_offset + MARGE
 
-        # Dessin du rectangle du joueur
+        joueur_rect = pygame.Rect(
+            joueur_x, joueur_y,
+            LARGEUR_CASE - 2*MARGE,
+            HAUTEUR_CASE - 2*MARGE
+        )
+
         pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 3)
 
+        # Indication orientation
         ep = 6
         rouge = (255, 0, 0)
         if joueur.orientation == "haut":
@@ -59,4 +82,3 @@ class Manoir:
             pygame.draw.line(surface, rouge, (joueur_rect.left, joueur_rect.top), (joueur_rect.left, joueur_rect.bottom), ep)
         elif joueur.orientation == "droite":
             pygame.draw.line(surface, rouge, (joueur_rect.right, joueur_rect.top), (joueur_rect.right, joueur_rect.bottom), ep)
-

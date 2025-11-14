@@ -25,18 +25,25 @@ class Inventaire:
         zone = pygame.Rect(x_inv, 0, largeur_inv, hauteur_fenetre)
         pygame.draw.rect(surface, COUL_INVENTAIRE, zone)
 
+         # --- Inventaire en bas ---
+        # Position verticale de l'inventaire (en bas mais avec marge)
+        inventaire_y = hauteur_fenetre - 180  # 180 px du bas, tu peux ajuster
+            
+        # Titre "Inventaire"
         titre = font.render("Inventaire", True, COUL_TEXTE)
-        surface.blit(titre, (x_inv + 20, 60))
+        surface.blit(titre, (x_inv + 20, inventaire_y - 120))
 
         # Rectangle pour la position actuelle du joueur / pièce
         titre2 = font.render("Pièce actuelle", True, COUL_TEXTE)
-        surface.blit(titre2, (x_inv + 195, 60))
-        taille_case = 150
-        pos_x = x_inv + 180
-        pos_y = 100
+        surface.blit(titre2, (x_inv + 130, inventaire_y - 440))
+
+        # Case plus grande
+        taille_case = 180  # augmente la taille
+        pos_x = x_inv + 100
+        pos_y = inventaire_y - 400
         joueur_rect = pygame.Rect(pos_x, pos_y, taille_case, taille_case)
         pygame.draw.rect(surface, (100, 100, 150), joueur_rect)  # couleur temporaire
-        pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 2)  # bordure blanche
+        pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 3)  # bordure blanche
 
 
         #Compteur de pas pour chaque déplacement
@@ -83,29 +90,46 @@ class Inventaire:
             surface.blit(self.images[i], (x, y))
 
         if self.afficher_room_choices:
-            self.draw_room_choices(surface, largeur_inv, hauteur_fenetre, x_inv)
+            self.draw_room_choices_window(surface, largeur_fenetre, hauteur_fenetre)
 
-    def draw_room_choices(self, surface, largeur_inv, hauteur_fenetre, x_inv):
-        """Affiche trois carrés en bas à gauche de l'inventaire"""
-        taille = 80
-        espace = 25
-        base_y = hauteur_fenetre - taille - 40
-        base_x = x_inv + 40
+    def draw_room_choices_window(self, surface, largeur_fenetre, hauteur_fenetre):
+        """Affiche une vraie fenêtre popup centrée pour choisir une salle."""
+
+        # --- Taille et position ---
+        w = 720
+        h = 380
+        x = (largeur_fenetre - w) // 2
+        y = (hauteur_fenetre - h) // 2
+
+        # --- Fenêtre ---
+        rect_fenetre = pygame.Rect(x, y, w, h)
+        pygame.draw.rect(surface, COUL_MENU, rect_fenetre, border_radius=12)
+        pygame.draw.rect(surface, COUL_TEXTE_CYAN, rect_fenetre, 3, border_radius=12)
+
+        # --- Titre ---
+        font = pygame.font.SysFont("arial", 26)
+        titre = font.render("Choisissez une salle :", True, COUL_TEXTE)
+        surface.blit(titre, (x + 20, y + 12))
+
+        # --- Cases de choix ---
+        taille = 160
+        espace = 45
+        total_w = 3 * taille + 2 * espace
+        base_x = x + (w - total_w) // 2
+        base_y = y + 60
 
         for i in range(3):
             rect = pygame.Rect(base_x + i * (taille + espace), base_y, taille, taille)
 
-            if i == self.room_choice_index:
-                couleur = COUL_SELECTION
-            else:
-                couleur = COUL_CHOIX
+            couleur = (255, 0, 0) if i == self.room_choice_index else COUL_TEXTE_CYAN
 
+            pygame.draw.rect(surface, COUL_CASE, rect, border_radius=8)
             pygame.draw.rect(surface, couleur, rect, 3, border_radius=8)
-            pygame.draw.rect(surface, (255, 255, 255), rect, 2)
 
-        font = pygame.font.SysFont("arial", 20)
-        txt = font.render("Choix de salle :", True, (255, 255, 255))
-        surface.blit(txt, (x_inv + 40, base_y - 30))
+        # --- Indication ---
+        font_small = pygame.font.SysFont("arial", 18)
+        txt = font_small.render("(Q D pour choisir • ESPACE pour valider)", True, COUL_TEXTE_FAIBLE)
+        surface.blit(txt, (x + 20, y + h - 30))
 
     # Permet de choisir une salle avec les flèches gauche/droite
     def changer_selection(self, direction):
