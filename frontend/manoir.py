@@ -17,6 +17,11 @@ class Manoir:
             pygame.image.load(('assets/Images/rooms/Antechamber.png')).convert_alpha(),
             (LARGEUR_CASE - 4*MARGE, HAUTEUR_CASE - 4*MARGE)
         )
+        self.grille =  [[None for i in range(NB_COLONNES)] for i in range(NB_LIGNES)] #on crée une grille (vide pour le moment) qui va contenir toutes les pièces créées lors de la génération
+        #2 pièces sont toujours initialisées : l'entrée et l'antichambre
+        self.grille[0][2] = "entrance"
+        self.grille[NB_LIGNES-1][2] = "antechamber"
+
 
     def ajout_piece(self, surface, joueur, x_offset, y_offset):
         # x_offset = 0 et y_offset = 90 dans la boucle principale
