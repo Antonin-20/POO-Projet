@@ -30,40 +30,38 @@ class Jeu:
         self.menu_actif = True
 
     def afficher_menu(self):
-        """Affiche le menu principal avant de lancer la partie."""
-        self.screen.fill((20, 20, 30))  # fond sombre
+        self.screen.fill(COUL_MENU)
 
-        # Titre du jeu
-        font_titre = pygame.font.SysFont("arial", 60, bold=True)
-        titre = font_titre.render(" Blue Prince ", True, (200, 200, 255))
-        rect_titre = titre.get_rect(center=(self.screen.get_width()//2, 120))
-        self.screen.blit(titre, rect_titre)
+        # Titre
+        font_titre = pygame.font.SysFont("arial", 70, bold=True)
+        titre = font_titre.render("BLUE PRINCE", True, COUL_TEXTE_CYAN)
+        self.screen.blit(titre, titre.get_rect(center=(self.screen.get_width()//2, 140)))
 
-        # Message de bienvenue
+        # Sous-titre
         font_texte = pygame.font.SysFont("arial", 28)
-        bienvenue = font_texte.render("Bienvenue dans Blue Prince", True, (255, 255, 255))
-        rect_bienvenue = bienvenue.get_rect(center=(self.screen.get_width()//2, 220))
-        self.screen.blit(bienvenue, rect_bienvenue)
+        bienvenue = font_texte.render("Bienvenue", True, COUL_TEXTE)
+        self.screen.blit(bienvenue, bienvenue.get_rect(center=(self.screen.get_width()//2, 210)))
 
         # Instructions
         font_instr = pygame.font.SysFont("arial", 22)
         instructions = [
-            "Naviguer dans le jeu et le menu : Z (haut), Q (gauche), S (bas), D (droite)",
-            "Valider : Espace",
-            "Atteins l’antichambre pour gagner",
-            "Si tu n’as plus de pas, tu perds"
+            "Déplacements : Z Q S D",
+            "Choisir une porte : Q / D",
+            "Valider : ESPACE",
+            "But : Atteindre l’Antichambre avant de manquer de pas"
         ]
+
         for i, texte in enumerate(instructions):
-            ligne = font_instr.render(texte, True, (220, 220, 220))
+            ligne = font_instr.render(texte, True, COUL_TEXTE_FAIBLE)
             self.screen.blit(ligne, (100, 320 + i * 40))
 
-        # Message d’invitation à jouer
+        # Lancement
         font_start = pygame.font.SysFont("arial", 26, bold=True)
-        start = font_start.render("Appuie sur [ESPACE] pour commencer", True, (255, 220, 150))
-        rect_start = start.get_rect(center=(self.screen.get_width()//2, 600))
-        self.screen.blit(start, rect_start)
+        start = font_start.render("Appuie sur [ESPACE] pour commencer", True, COUL_DORE)
+        self.screen.blit(start, start.get_rect(center=(self.screen.get_width()//2, 600)))
 
         pygame.display.flip()
+
 
     
     def verification_fin(self):

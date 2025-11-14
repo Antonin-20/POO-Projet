@@ -38,11 +38,36 @@ class Inventaire:
         pygame.draw.rect(surface, (100, 100, 150), joueur_rect)  # couleur temporaire
         pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 2)  # bordure blanche
 
+
         #Compteur de pas pour chaque déplacement
         compteur_texte = font.render(str(joueur.footprint), True, COUL_TEXTE)
-        x_compteur = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_texte.get_width() - 5
+        x_compteur = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_texte.get_width() - 10
         y_compteur = 68
         surface.blit(compteur_texte, (x_compteur, y_compteur))
+
+        # Compteur de coins
+        compteur_coins = font.render(str(joueur.coins), True, COUL_TEXTE)
+        x_coins = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_coins.get_width() - 10
+        y_coins = 68 + 1*TAILLE_ICONE + 20   
+        surface.blit(compteur_coins, (x_coins, y_coins)) 
+
+        # Compteur de gemmes
+        compteur_gems = font.render(str(joueur.gems), True, COUL_TEXTE)
+        x_gems = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_gems.get_width() - 10
+        y_gems = 68 + 2*TAILLE_ICONE + 40
+        surface.blit(compteur_gems, (x_gems, y_gems))
+
+        # Compteur de keys
+        compteur_keys = font.render(str(joueur.keys), True, COUL_TEXTE)
+        x_keys = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_keys.get_width() - 10
+        y_keys = 68 + 3*TAILLE_ICONE + 60
+        surface.blit(compteur_keys, (x_keys, y_keys))
+
+        # Compteur de dice
+        compteur_dice = font.render(str(joueur.dice), True, COUL_TEXTE)
+        x_dice = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_dice.get_width() - 10
+        y_dice = 68 + 4*TAILLE_ICONE + 80
+        surface.blit(compteur_dice, (x_dice, y_dice))
 
         # Affichage des icônes
         marge_x, marge_y, espace = 20, 60, 20
