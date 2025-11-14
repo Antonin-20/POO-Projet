@@ -1,10 +1,10 @@
-import pygame
+import pygame 
 import sys
 import os
-from frontend.constantes import *
-from frontend.joueur import *
-from frontend.inventaire import *
-from frontend.manoir import *
+from .constantes import *
+from .joueur import Joueur
+from .inventaire import Inventaire
+from .manoir import Manoir
 
 
 class Jeu:
@@ -35,24 +35,23 @@ class Jeu:
 
         # Titre du jeu
         font_titre = pygame.font.SysFont("arial", 60, bold=True)
-        titre = font_titre.render(" Manoir Magique ", True, (200, 200, 255))
+        titre = font_titre.render(" Blue Prince ", True, (200, 200, 255))
         rect_titre = titre.get_rect(center=(self.screen.get_width()//2, 120))
         self.screen.blit(titre, rect_titre)
 
         # Message de bienvenue
         font_texte = pygame.font.SysFont("arial", 28)
-        bienvenue = font_texte.render("Bienvenue dans le manoir mystérieux", True, (255, 255, 255))
+        bienvenue = font_texte.render("Bienvenue dans Blue Prince", True, (255, 255, 255))
         rect_bienvenue = bienvenue.get_rect(center=(self.screen.get_width()//2, 220))
         self.screen.blit(bienvenue, rect_bienvenue)
 
         # Instructions
         font_instr = pygame.font.SysFont("arial", 22)
         instructions = [
-            "Déplacements : Z (haut), Q (gauche), S (bas), D (droite)",
-            "Inventaire : flèches ← → pour choisir une salle",
-            "Valider un choix : ESPACE",
+            "Naviguer dans le jeu et le menu : Z (haut), Q (gauche), S (bas), D (droite)",
+            "Valider : Espace",
             "Atteins l’antichambre pour gagner",
-            "Si tu n’as plus de pas, tu perds "
+            "Si tu n’as plus de pas, tu perds"
         ]
         for i, texte in enumerate(instructions):
             ligne = font_instr.render(texte, True, (220, 220, 220))
@@ -84,7 +83,6 @@ class Jeu:
         """Réinitialise les variables du jeu pour une nouvelle partie."""
         self.joueur = Joueur()
         self.inventaire = Inventaire()
-        self
         self.phase_choix = False
         self.message_fin = ""
         self.fin_jeu = False
@@ -157,9 +155,9 @@ class Jeu:
                             self.phase_choix = True
                             self.inventaire.afficher_room_choices = True
                     else:  # phase de choix
-                        if event.key == pygame.K_LEFT:
+                        if event.key == pygame.K_q:
                             self.inventaire.changer_selection("gauche")
-                        elif event.key == pygame.K_RIGHT: 
+                        elif event.key == pygame.K_d: 
                             self.inventaire.changer_selection("droite")
                         elif event.key == pygame.K_SPACE:
                             # Confirmation du choix

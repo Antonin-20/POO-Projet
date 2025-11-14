@@ -11,7 +11,7 @@ HAUTEUR_CASE = HAUTEUR_GRILLE_FIXE // NB_LIGNES #720 // 9 = 80
 
 """A changer les couleurs"""
 COUL_FOND = (42, 101, 161) # Gris très foncé
-COUL_CASE = (40, 99, 164) # Gris moyen
+COUL_CASE = (31,31,31) # Gris moyen
 COUL_INVENTAIRE = (42, 101, 161) # Bleu grisâtre
 COUL_TEXTE = (255, 255, 255) # Blanc
 COUL_CHOIX = (100, 120, 200) # Bleu

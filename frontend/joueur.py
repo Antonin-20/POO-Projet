@@ -9,7 +9,7 @@ class Joueur:
         self.ligne = ligne
         self.colonne = colonne
         self.orientation = "haut"
-        self.footprint = 2
+        self.footprint = 70
 
     def orienter(self, direction):
         self.orientation = direction
