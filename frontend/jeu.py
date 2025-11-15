@@ -207,11 +207,43 @@ class Jeu:
 
                         # entrée en mode CHOIX DE SALLE
                         elif event.key == pygame.K_SPACE:
-                            self.phase_choix = True
-                            self.inventaire.afficher_room_choices = True
-                            # Tirage aléatoire des 3 choix depuis backend
-                            self.inventaire.room_choices = [choix_pièce() for _ in range(3)]
-                            self.inventaire.room_choice_index = 0
+                            # --- 1) CALCULER LA CASE CIBLE EN FONCTION DE L’ORIENTATION ---
+                            cible_ligne = self.joueur.ligne
+                            cible_colonne = self.joueur.colonne
+
+                            if self.joueur.orientation == "haut" and self.joueur.ligne < NB_LIGNES - 1:
+                                cible_ligne += 1
+                            elif self.joueur.orientation == "bas" and self.joueur.ligne > 0:
+                                cible_ligne -= 1
+                            elif self.joueur.orientation == "gauche" and self.joueur.colonne > 0:
+                                cible_colonne -= 1
+                            elif self.joueur.orientation == "droite" and self.joueur.colonne < NB_COLONNES - 1:
+                                cible_colonne += 1
+                            else:
+                                # déplacement impossible (bord de grille) → on ne fait rien
+                                continue
+
+                            # --- 2) REGARDER SI UNE SALLE EXISTE DÉJÀ SUR LA CASE CIBLE ---
+                            salle_cible = self.manoir.grille[cible_ligne][cible_colonne]
+
+                            if salle_cible is not None:
+                                # Il y a déjà une salle -> déplacement direct sans popup
+                                self.joueur.deplacer()
+                                self.verification_fin()
+                            else:
+                                # Case vide -> on entre en phase de choix
+                                self.phase_choix = True
+                                self.inventaire.afficher_room_choices = True
+
+                                # Tirer 3 rooms aléatoires (sans entrance / antechamber)
+                                self.inventaire.room_choices = []
+                                for _ in range(3):
+                                    room_id = choix_pièce()
+                                    while room_id in ("entrance", "antechamber"):
+                                        room_id = choix_pièce()
+                                    self.inventaire.room_choices.append(room_id)
+
+                                self.inventaire.room_choice_index = 0
 
                     # -----------------------------------------
                     #           PHASE CHOIX DE SALLE
@@ -228,16 +260,24 @@ class Jeu:
                             self.phase_choix = False
                             self.inventaire.afficher_room_choices = False
 
-                            # mémoriser l’ancienne position
+                            # mémoriser l’ancienne position (si besoin)
                             ancienne_ligne = self.joueur.ligne
                             ancienne_colonne = self.joueur.colonne
 
-                            # déplacement réel
+                            # déplacement réel du joueur
                             self.joueur.deplacer()
 
-                            # --- AJOUT AUTOMATIQUE DE SALLE ---
-                            if self.manoir.grille[self.joueur.ligne][self.joueur.colonne] is None:
-                                self.manoir.grille[self.joueur.ligne][self.joueur.colonne] = "room"
+                            # --- RÉCUPÉRER LA PIÈCE CHOISIE DANS LE POPUP ---
+                            if self.inventaire.room_choices:
+                                room_id = self.inventaire.room_choices[self.inventaire.room_choice_index]
+                            else:
+                                room_id = None  # sécurité
+
+                            # --- PLACER LA PIÈCE DANS LA GRILLE ---
+                            if room_id is not None:
+                                # on vérifie qu'on n'écrase pas entrée/antichambre par accident
+                                if self.manoir.grille[self.joueur.ligne][self.joueur.colonne] is None:
+                                    self.manoir.grille[self.joueur.ligne][self.joueur.colonne] = room_id
 
                             # test de fin
                             self.verification_fin()
