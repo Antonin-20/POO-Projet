@@ -227,21 +227,40 @@ class Jeu:
                                 continue
 
                             # --- 2) VERIFIER SI LA PORTE EXISTE DANS CETTE ORIENTATION ---
-                            piece_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
-                            if piece_actuelle is not None:
-                                portes = piece_actuelle.doors
+                            piece_depart = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
+                            if piece_depart is not None:
+                                portes_depart = piece_depart.doors
                             else:
-                                portes = []
-                            porte_orientation = self.joueur.ORIENTATION_TO_DOOR[self.joueur.orientation]
+                                portes_depart = []
 
-                            if porte_orientation not in portes:
-                                # pas de porte → afficher message
-                                self.joueur.deplacer(self.manoir, self.inventaire)
+                            # Calcul position cible selon orientation
+                            cible_ligne = self.joueur.ligne
+                            cible_colonne = self.joueur.colonne
+                            if self.joueur.orientation == "haut" and self.joueur.ligne < NB_LIGNES - 1:
+                                cible_ligne += 1
+                            elif self.joueur.orientation == "bas" and self.joueur.ligne > 0:
+                                cible_ligne -= 1
+                            elif self.joueur.orientation == "gauche" and self.joueur.colonne > 0:
+                                cible_colonne -= 1
+                            elif self.joueur.orientation == "droite" and self.joueur.colonne < NB_COLONNES - 1:
+                                cible_colonne += 1
+                            else:
+                                self.inventaire.message = "Il n'y a pas de porte dans cette direction"
                                 continue
 
-                            else:
-                                # on efface le message précédent
-                                self.inventaire.message = ""
+                            # Pièce cible (si elle existe)
+                            piece_cible = self.manoir.grille[cible_ligne][cible_colonne]
+                            portes_cible = piece_cible.doors if piece_cible else []
+
+                            # Vérification cohérence double porte
+                            porte_depart = self.joueur.ORIENTATION_TO_DOOR[self.joueur.orientation]
+                            opposite = {"N":"S", "S":"N", "E":"W", "W":"E"}
+                            porte_arrivee = opposite[porte_depart]
+
+                            if porte_depart not in portes_depart or (piece_cible and porte_arrivee not in portes_cible):
+                                self.inventaire.message = "Pas de porte dans cette direction !"
+                                self.inventaire.message_timer = pygame.time.get_ticks()
+                                continue
 
                             # --- 3) REGARDER SI UNE SALLE EXISTE DÉJÀ SUR LA CASE CIBLE ---
                             salle_cible = self.manoir.grille[cible_ligne][cible_colonne]

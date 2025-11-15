@@ -32,7 +32,9 @@ class Piece :
         self.gem_cost = ROOM_CATALOG[self.id]["gem_cost"]
         self.image_path = ROOM_CATALOG[self.id]["image"]
         self.doors = ROOM_CATALOG[self.id]["doors"]
+        print(f"Portes avant orientation de la pièce {self.id} : {self.doors}")
         self.doors = self.calculer_portes_orientees()  #on modifie les portes selon l'orientation
+        print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
         self.placement = ROOM_CATALOG[self.id]["placement"] 
         self.loot = ROOM_CATALOG[self.id]["loot"] 
     
@@ -40,14 +42,14 @@ class Piece :
             """Renvoie la liste des portes pivotées selon l'orientation de la pièce."""
             if not self.doors: #on s'assure qu'il y ait des portes dans la pièce
                 return []
-            rotation_map = {0:0, 90:1, 180:2, 270:3}  #nb de quarts de tour
-            nb_quarts = rotation_map.get(self.orientation, 0)
+            rotation_map = {0:0, 90:1, 180:2, 270:3}  #nb de quarts de tour à effectuer selon l'angle de la pièce
+            nb_quarts = rotation_map[self.orientation]
 
             directions = ["N", "E", "S", "W"]
             portes_orientees = []
             for d in self.doors:
                 idx = directions.index(d)
-                new_idx = (idx + nb_quarts) % 4
+                new_idx = (idx - nb_quarts) % 4                 #att au -, nécessaire car pygame fait des rotations hraires
                 portes_orientees.append(directions[new_idx])
             return portes_orientees
     

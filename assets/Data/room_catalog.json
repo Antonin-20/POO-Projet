@@ -158,7 +158,7 @@
       "rarity": 1,
       "gem_cost": 1,
       "image": "Images/rooms/Courtyard.png",
-      "doors": ["N", "S", "E", "W"],
+      "doors": ["S", "E", "W"],
       "placement": { "border": 0 },
       "loot": [
         { "id": "metal_detector", "qty": 1, "p": 0.33 }

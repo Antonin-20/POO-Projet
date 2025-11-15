@@ -101,7 +101,7 @@ class Manoir:
                 if piece is not None:
                     img = self.images.get(piece.id)  # récupère l'image via l'id
                     if piece.orientation != 0:
-                        img = pygame.transform.rotate(img, piece.orientation)  # appliquer orientation
+                        img = pygame.transform.rotate(img, piece.orientation)  # appliquer orientation (sens horaire pour pygame !!!)
                     surface.blit(img, (x + MARGE, y + MARGE))
 
         # -------------------------------------------------------
