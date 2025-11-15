@@ -32,9 +32,9 @@ class Piece :
         self.gem_cost = ROOM_CATALOG[self.id]["gem_cost"]
         self.image_path = ROOM_CATALOG[self.id]["image"]
         self.doors = ROOM_CATALOG[self.id]["doors"]
-        print(f"Portes avant orientation de la pièce {self.id} : {self.doors}")
+        #print(f"Portes avant orientation de la pièce {self.id} : {self.doors}")
         self.doors = self.calculer_portes_orientees()  #on modifie les portes selon l'orientation
-        print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
+        #print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
         self.placement = ROOM_CATALOG[self.id]["placement"] 
         self.loot = ROOM_CATALOG[self.id]["loot"] 
     

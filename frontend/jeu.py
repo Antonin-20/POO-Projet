@@ -6,7 +6,7 @@ from .joueur import Joueur
 from .inventaire import Inventaire
 from backend.piece import Piece
 from backend.manoir import Manoir
-from backend.aleatoire_generation_pieces import choix_pièce
+from backend.aleatoire_generation_pieces import *
 
 
 
@@ -156,6 +156,45 @@ class Jeu:
             pygame.draw.rect(self.screen, couleur, rect, 3, border_radius=8)
             pygame.draw.rect(self.screen, (255,255,255), rect, 2)
 
+    def creer_nouvelle_piece(self):
+        # Tirer 3 pièces depuis le pool
+        choix = extrait_pool()
+
+        # Stocker pour le pop-up
+        self.inventaire.room_choices = choix
+        self.inventaire.room_choice_index = 0
+        self.inventaire.afficher_room_choices = True
+        self.phase_choix = True
+
+        while self.phase_choix:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.inventaire.changer_selection("gauche")
+                    elif event.key == pygame.K_d:
+                        self.inventaire.changer_selection("droite")
+                    elif event.key == pygame.K_SPACE:
+                        selection = self.inventaire.room_choices[self.inventaire.room_choice_index]
+
+                        # Placer la pièce
+                        ligne, col = self.joueur.ligne, self.joueur.colonne
+                        nouvelle_piece = Piece(selection, (ligne, col), self.joueur.orientation)
+                        self.manoir.grille[ligne][col] = nouvelle_piece
+
+                        # Retirer la pièce choisie et remettre les autres dans le pool
+                        retirer_piece_du_pool(selection)
+                        autres = [p for p in choix if p != selection]
+                        remettre_pieces_dans_pool(autres)
+
+                        # Fin du choix
+                        self.phase_choix = False
+                        self.inventaire.afficher_room_choices = False
+
+
+
     def boucle_principale(self):
         while True:
             for event in pygame.event.get():
@@ -262,32 +301,16 @@ class Jeu:
                                 self.inventaire.message_timer = pygame.time.get_ticks()
                                 continue
 
-                            # --- 3) REGARDER SI UNE SALLE EXISTE DÉJÀ SUR LA CASE CIBLE ---
-                            salle_cible = self.manoir.grille[cible_ligne][cible_colonne]
-
-                            if salle_cible is not None:
-                                # case déjà occupée → déplacement direct sans popup
+                            # --- 3) CASE CIBLE ---
+                            if piece_cible is not None:
+                                # case déjà occupée → déplacement direct
                                 self.joueur.deplacer(self.manoir, self.inventaire)
                                 self.verification_fin()
                             else:
-                                # case vide → entrer en phase choix
-                                self.phase_choix = True
-                                self.inventaire.afficher_room_choices = True
+                                # case vide → créer la nouvelle pièce avec pop-up
+                                self.creer_nouvelle_piece()
+                                self.verification_fin()
 
-                                # Tirer 3 salles aléatoires (sans entrance / antechamber)
-                                self.inventaire.room_choices = []
-                                self.inventaire.room_orientations = {}
-                                while len(self.inventaire.room_choices) < 3:
-                                    room_id = choix_pièce()
-
-                                    if room_id not in ("entrance", "antechamber"):
-
-                                        self.inventaire.room_choices.append(room_id)
-
-                                        # stocker orientation pour aligner avec porte actuelle du joueur
-                                        self.inventaire.room_orientations[room_id] = self.joueur.orientation
-
-                                self.inventaire.room_choice_index = 0
 
                     # -----------------------------------------
                     #           PHASE CHOIX DE SALLE

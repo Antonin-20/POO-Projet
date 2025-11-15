@@ -2,7 +2,7 @@ import pygame
 import sys
 import os
 from frontend.constantes import *
-from backend.aleatoire_generation_pieces import choix_pièce
+from backend.aleatoire_generation_pieces import *
 import json
 
 # --- Chargement du JSON pour récupérer toutes les infos des rooms ---
@@ -21,7 +21,7 @@ class Inventaire:
         for nom in noms:
             chemin = f"assets/Images/icone_inv/{nom}"
             img = pygame.image.load(chemin).convert_alpha()
-            img = pygame.transform.smoothscale(img, (TAILLE_ICONE, TAILLE_ICONE))
+            img = pygame.transform.smoothscale(img, (TAILLE_ICONE,TAILLE_ICONE))
             self.images.append(img)
 
         # --- Contrôle du choix de salle ---
