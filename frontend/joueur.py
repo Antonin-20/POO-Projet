@@ -30,6 +30,10 @@ class Joueur:
     "droite": "E"
     }
 
+    def recuperer_loot(self,piece):
+        """Méthode qui permet de récupérer le loot d'une pièce donnée en argument."""
+        pass
+
     def deplacer(self, manoir, inventaire):
         ancienne_pos = (self.ligne, self.colonne)
 

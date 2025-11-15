@@ -55,46 +55,46 @@ class Popup:
         """Affiche le popup si self.afficher est True."""
         if not self.afficher:
             return  # on ne dessine rien
+        else :
+            # Taille popup
+            w, h = 720, 380
+            x = (largeur_fenetre - w) // 2
+            y = (hauteur_fenetre - h) // 2
 
-        # Taille popup
-        w, h = 720, 380
-        x = (largeur_fenetre - w) // 2
-        y = (hauteur_fenetre - h) // 2
+            # Fond semi-transparent derrière
+            overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 120))
+            surface.blit(overlay, (0, 0))
 
-        # Fond semi-transparent derrière
-        overlay = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 120))
-        surface.blit(overlay, (0, 0))
+            # Fenêtre principale
+            rect_fenetre = pygame.Rect(x, y, w, h)
+            pygame.draw.rect(surface, COUL_MENU, rect_fenetre, border_radius=12)
+            pygame.draw.rect(surface, COUL_TEXTE_CYAN, rect_fenetre, 3, border_radius=12)
 
-        # Fenêtre principale
-        rect_fenetre = pygame.Rect(x, y, w, h)
-        pygame.draw.rect(surface, COUL_MENU, rect_fenetre, border_radius=12)
-        pygame.draw.rect(surface, COUL_TEXTE_CYAN, rect_fenetre, 3, border_radius=12)
+            font = pygame.font.SysFont("arial", 26)
+            titre = font.render("Choisissez une salle :", True, COUL_TEXTE)
+            surface.blit(titre, (x + 20, y + 12))
 
-        font = pygame.font.SysFont("arial", 26)
-        titre = font.render("Choisissez une salle :", True, COUL_TEXTE)
-        surface.blit(titre, (x + 20, y + 12))
+            # Cases pour les 3 pièces
+            taille, espace = 160, 45
+            total_w = 3 * taille + 2 * espace
+            base_x = x + (w - total_w) // 2
+            base_y = y + 60
 
-        # Cases pour les 3 pièces
-        taille, espace = 160, 45
-        total_w = 3 * taille + 2 * espace
-        base_x = x + (w - total_w) // 2
-        base_y = y + 60
+            for i, room_id in enumerate(self.room_choices):
+                rect = pygame.Rect(base_x + i * (taille + espace), base_y, taille, taille)
+                # couleur du contour selon la sélection
+                couleur = (255, 0, 0) if i == self.room_choice_index else COUL_TEXTE_CYAN
 
-        for i, room_id in enumerate(self.room_choices):
-            rect = pygame.Rect(base_x + i * (taille + espace), base_y, taille, taille)
-            # couleur du contour selon la sélection
-            couleur = (255, 0, 0) if i == self.room_choice_index else COUL_TEXTE_CYAN
+                pygame.draw.rect(surface, COUL_CASE, rect, border_radius=8)
+                pygame.draw.rect(surface, couleur, rect, 3, border_radius=8)
 
-            pygame.draw.rect(surface, COUL_CASE, rect, border_radius=8)
-            pygame.draw.rect(surface, couleur, rect, 3, border_radius=8)
-
-            # Image de la pièce
-            if room_id in self.room_images:
-                img = self.room_images[room_id]
-                img_x = rect.x + (rect.width - img.get_width()) // 2
-                img_y = rect.y + (rect.height - img.get_height()) // 2
-                surface.blit(img, (img_x, img_y))
+                # Image de la pièce
+                if room_id in self.room_images:
+                    img = self.room_images[room_id]
+                    img_x = rect.x + (rect.width - img.get_width()) // 2
+                    img_y = rect.y + (rect.height - img.get_height()) // 2
+                    surface.blit(img, (img_x, img_y))
 
         # Petit texte d'aide
         font_small = pygame.font.SysFont("arial", 18)

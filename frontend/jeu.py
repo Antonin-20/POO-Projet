@@ -371,7 +371,7 @@ class Jeu:
 
             if self.menu_actif:
                 self.afficher_menu()
-            else:
+            else:#on est plus dans le menu
                 largeur, hauteur = self.screen.get_size()
                 self.screen.fill(COUL_FOND)
 
