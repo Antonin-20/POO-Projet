@@ -57,3 +57,5 @@ var/
 *.pkl
 *.pdf
 *.txt
+
+promp_GPT.txt

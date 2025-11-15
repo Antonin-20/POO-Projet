@@ -33,12 +33,11 @@ class Joueur:
     def deplacer(self, manoir, inventaire):
         ancienne_pos = (self.ligne, self.colonne)
 
-        salle_id = manoir.grille[self.ligne][self.colonne]
-        if salle_id is None:
-            return  # pas de salle ici, déplacement impossible
-
-        # récupérer les portes de la salle actuelle
-        portes = manoir.room_doors.get(salle_id, [])
+        piece = manoir.grille[self.ligne][self.colonne]
+        if piece is None:
+            return
+        salle_id = piece.id
+        portes = piece.doors        #chaque pièce a son attribut "doors"
 
         porte = self.ORIENTATION_TO_DOOR[self.orientation]
 

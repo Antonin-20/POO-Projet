@@ -3,6 +3,7 @@ import json
 import os 
 from typing import Optional, List
 from frontend.constantes import *
+from backend.piece import Piece
 import json
 
 
@@ -20,8 +21,8 @@ class Manoir:
 
         self.grille =  [[None for i in range(NB_COLONNES)] for i in range(NB_LIGNES)] #on crée une grille (vide pour le moment) qui va contenir toutes les pièces créées lors de la génération
         #2 pièces sont toujours initialisées : l'entrée et l'antichambre
-        self.grille[0][2] = "entrance"
-        self.grille[NB_LIGNES-1][2] = "antechamber"
+        self.grille[0][2] = Piece("entrance", (0, 2), "haut")
+        self.grille[NB_LIGNES-1][2] = Piece("antechamber", (NB_LIGNES-1, 2), "haut")
 
 
         # --- c'est ici qu'on va charger toutes les pieces du json ---
@@ -43,7 +44,7 @@ class Manoir:
         else:
             print("fichier JSON introuvable :", json_path)
             rooms = []
-        # ...
+
         for r in rooms:
             room_id = r.get("id")
             image_rel = r.get("image")
@@ -96,12 +97,12 @@ class Manoir:
                 pygame.draw.rect(surface, COUL_CASE, rect)
 
                 # --- Récupération de la pièce associée ---
-                piece_id = self.grille[i][j]
-
-                if piece_id is not None:
-                    img = self.images.get(piece_id)
-                    if img:
-                        surface.blit(img, (x + MARGE, y + MARGE))
+                piece = self.grille[i][j]
+                if piece is not None:
+                    img = self.images.get(piece.id)  # récupère l'image via l'id
+                    if piece.orientation != 0:
+                        img = pygame.transform.rotate(img, piece.orientation)  # appliquer orientation
+                    surface.blit(img, (x + MARGE, y + MARGE))
 
         # -------------------------------------------------------
         # Dessin du joueur

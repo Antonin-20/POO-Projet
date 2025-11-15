@@ -137,27 +137,15 @@ class Inventaire:
             pygame.draw.rect(surface, COUL_CASE, rect, border_radius=8)
             pygame.draw.rect(surface, couleur, rect, 3, border_radius=8)
 
-            # Image de la pièce
+            # Image de la pièce (sans rotation)
             if room_id in self.room_images:
                 img = self.room_images[room_id]
-                if room_id in self.room_orientations:
-                    ori = self.room_orientations[room_id]
-                    # # Rotation selon orientation
-                    # if ori == "haut":
-                    #     img_rot = img
-                    # elif ori == "droite":
-                    #     img_rot = pygame.transform.rotate(img, -90)
-                    # elif ori == "bas":
-                    #     img_rot = pygame.transform.rotate(img, 180)
-                    # elif ori == "gauche":
-                    #     img_rot = pygame.transform.rotate(img, 90)
-                    # surface.blit(img_rot, (rect.x + 5, rect.y + 5))
-                else:
-                    surface.blit(img, (rect.x+5, rect.y+5))
+                surface.blit(img, (rect.x + 5, rect.y + 5))
 
         font_small = pygame.font.SysFont("arial", 18)
         txt = font_small.render("(Q D pour choisir • ESPACE pour valider)", True, COUL_TEXTE_FAIBLE)
         surface.blit(txt, (x + 20, y + h - 30))
+
 
     # --- Changer la sélection ---
     def changer_selection(self, direction):

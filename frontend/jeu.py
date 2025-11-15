@@ -4,6 +4,7 @@ import os
 from .constantes import *
 from .joueur import Joueur
 from .inventaire import Inventaire
+from backend.piece import Piece
 from backend.manoir import Manoir
 from backend.aleatoire_generation_pieces import choix_pièce
 
@@ -226,8 +227,11 @@ class Jeu:
                                 continue
 
                             # --- 2) VERIFIER SI LA PORTE EXISTE DANS CETTE ORIENTATION ---
-                            salle_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
-                            portes = self.manoir.room_doors.get(salle_actuelle, [])
+                            piece_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
+                            if piece_actuelle is not None:
+                                portes = piece_actuelle.doors
+                            else:
+                                portes = []
                             porte_orientation = self.joueur.ORIENTATION_TO_DOOR[self.joueur.orientation]
 
                             if porte_orientation not in portes:
@@ -288,21 +292,20 @@ class Jeu:
                             # déplacement réel du joueur
                             self.joueur.deplacer(self.manoir, self.inventaire)
 
-                            # --- RÉCUPÉRER LA PIÈCE CHOISIE DANS LE POPUP ---
-                            if self.inventaire.room_choices:
-                                room_id = self.inventaire.room_choices[self.inventaire.room_choice_index]
-                            else:
-                                room_id = None  # sécurité
-
-                            # --- PLACER LA PIÈCE DANS LA GRILLE ---
+                            # --- PLACER LA PIÈCE DANS LA GRILLE COMME INSTANCE ---
+                            room_id = self.inventaire.room_choices[self.inventaire.room_choice_index]
                             if room_id is not None:
-                                # on vérifie qu'on n'écrase pas entrée/antichambre par accident
+                                # vérifier qu'on n'écrase pas entrée/antichambre
                                 if self.manoir.grille[self.joueur.ligne][self.joueur.colonne] is None:
-                                    self.manoir.grille[self.joueur.ligne][self.joueur.colonne] = room_id
+                                    # créer l'instance Piece
+                                    pos = (self.joueur.ligne, self.joueur.colonne)
+                                    direction = self.joueur.orientation
+                                    nouvelle_piece = Piece(room_id, pos, direction)
 
-                                    # --- Appliquer l'orientation stockée ---
-                                    orientation = self.inventaire.room_orientations.get(room_id, "haut")
-                                    self.manoir.room_orientations[self.joueur.ligne][self.joueur.colonne] = orientation
+                                    # stocker dans la grille
+                                    self.manoir.grille[self.joueur.ligne][self.joueur.colonne] = nouvelle_piece
+
+
 
                             # test de fin
                             self.verification_fin()
