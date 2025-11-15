@@ -1,56 +1,86 @@
 import pygame
-import sys
-import os
-from .joueur import Joueur
-from .inventaire import Inventaire
-from .constantes import * 
-
-
+import json
+import os 
+from typing import Optional, List
+from .constantes import *
 
 class Manoir:
-    def __init__(self):
-        self.entrance_img = pygame.transform.smoothscale(
-            pygame.image.load(('assets/Images/rooms/Entrance_Hall.png')).convert_alpha(),
-            (LARGEUR_CASE - 4*MARGE, HAUTEUR_CASE - 4*MARGE)
-        )
-        self.antechamber_img = pygame.transform.smoothscale(
-            pygame.image.load(('assets/Images/rooms/Antechamber.png')).convert_alpha(),
-            (LARGEUR_CASE - 4*MARGE, HAUTEUR_CASE - 4*MARGE)
-        )
-        self.grille =  [[None for i in range(NB_COLONNES)] for i in range(NB_LIGNES)] #on crée une grille (vide pour le moment) qui va contenir toutes les pièces créées lors de la génération
-        #2 pièces sont toujours initialisées : l'entrée et l'antichambre
+
+    def __init__(self,room_catalog):
+
+        self.room_catalog = room_catalog  #dictionnaire se rapportant au .json avec tt les salles
+
+        # --- Chargement des images ---
+        self.images = {}
+        for room_id, room in self.room_catalog.items():
+            img_path = os.path.join("assets", room["image"])
+
+            try:
+                img = pygame.image.load(img_path).convert_alpha()
+                img = pygame.transform.smoothscale(
+                    img,
+                    (LARGEUR_CASE - 4*MARGE, HAUTEUR_CASE - 4*MARGE)
+                )
+                self.images[room_id] = img
+            except Exception as e:
+                print(f"[WARNING] Impossible de charger {img_path} : {e}")
+
+        # --- Création de la grille ---
+        self.grille: List[List[Optional[str]]] = [
+            [None for _ in range(NB_COLONNES)]
+            for _ in range(NB_LIGNES)
+        ]
+
+        # 2 pièces initiales
         self.grille[0][2] = "entrance"
-        self.grille[NB_LIGNES-1][2] = "antechamber"
+        self.grille[NB_LIGNES - 1][2] = "antechamber"
 
 
+    # ---------------------------------------------------------------
+    # Dessin de la grille + pièces + joueur
+    # ---------------------------------------------------------------
     def ajout_piece(self, surface, joueur, x_offset, y_offset):
-        # x_offset = 0 et y_offset = 90 dans la boucle principale
-        #HAUTEUR_CASE = 80, MARGE = 2, LARGEUR_CASE = 80
-        for i in range(NB_LIGNES): # de 0 à 8
-            for j in range(NB_COLONNES): # de 0 à 4
-                y = (NB_LIGNES - 1 - i) * HAUTEUR_CASE + y_offset + MARGE #position verticale de la case
-                x = j * LARGEUR_CASE + x_offset + MARGE #position horizontale de la case
-                
-                rect = pygame.Rect(x, y, LARGEUR_CASE - 2*MARGE, HAUTEUR_CASE - 2*MARGE) #rectangle de la case
-                pygame.draw.rect(surface, COUL_CASE, rect) #dessine la case
 
-                if i == 0 and j == 2:
-                    surface.blit(self.entrance_img, (x + MARGE, y + MARGE))
-                elif i == NB_LIGNES - 1 and j == 2:
-                    surface.blit(self.antechamber_img, (x + MARGE, y + MARGE))
+        for i in range(NB_LIGNES):
+            for j in range(NB_COLONNES):
 
-        # Calcul de la position du joueur
+                # Coordonnées écran
+                y = (NB_LIGNES - 1 - i) * HAUTEUR_CASE + y_offset + MARGE
+                x = j * LARGEUR_CASE + x_offset + MARGE
+
+                # Rectangle de la case
+                rect = pygame.Rect(x, y, LARGEUR_CASE - 2*MARGE, HAUTEUR_CASE - 2*MARGE)
+
+                # Fond de la case
+                pygame.draw.rect(surface, COUL_CASE, rect)
+
+                # --- Récupération de la pièce associée ---
+                piece_id = self.grille[i][j]
+
+                if piece_id is not None:
+                    img = self.images.get(piece_id)
+                    if img:
+                        surface.blit(img, (x + MARGE, y + MARGE))
+
+        # -------------------------------------------------------
+        # Dessin du joueur
+        # -------------------------------------------------------
         joueur_x = x_offset + joueur.colonne * LARGEUR_CASE + MARGE
         joueur_y = y_offset + (NB_LIGNES - 1 - joueur.ligne) * HAUTEUR_CASE + MARGE
 
-        # Création du rectangle du joueur
-        joueur_rect = pygame.Rect(joueur_x, joueur_y, LARGEUR_CASE - 2*MARGE, HAUTEUR_CASE - 2*MARGE)
+        joueur_rect = pygame.Rect(
+            joueur_x, joueur_y,
+            LARGEUR_CASE - 2*MARGE,
+            HAUTEUR_CASE - 2*MARGE
+        )
 
-        # Dessin du rectangle du joueur
+        # Contour blanc
         pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 3)
 
+        # Orientation
         ep = 6
         rouge = (255, 0, 0)
+
         if joueur.orientation == "haut":
             pygame.draw.line(surface, rouge, (joueur_rect.left, joueur_rect.top), (joueur_rect.right, joueur_rect.top), ep)
         elif joueur.orientation == "bas":
@@ -59,4 +89,3 @@ class Manoir:
             pygame.draw.line(surface, rouge, (joueur_rect.left, joueur_rect.top), (joueur_rect.left, joueur_rect.bottom), ep)
         elif joueur.orientation == "droite":
             pygame.draw.line(surface, rouge, (joueur_rect.right, joueur_rect.top), (joueur_rect.right, joueur_rect.bottom), ep)
-

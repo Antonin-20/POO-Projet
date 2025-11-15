@@ -8,7 +8,7 @@ from .manoir import Manoir
 
 
 class Jeu:
-    def __init__(self):
+    def __init__(self,room_catalog):
         pygame.init()
         self.screen = pygame.display.set_mode((900, 720), pygame.RESIZABLE)
         pygame.display.set_caption("Manoir Magique")
@@ -18,7 +18,7 @@ class Jeu:
         # instanciation des classes
         self.joueur = Joueur() # objet joueur
         self.inventaire = Inventaire() # objet inventaire
-        self.manoir = Manoir() # objet manoir
+        self.manoir = Manoir(room_catalog) # objet manoir
 
         self.plein_ecran = False
         self.phase_choix = False  # vrai quand on choisit une salle
