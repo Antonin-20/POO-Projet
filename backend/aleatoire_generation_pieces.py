@@ -64,7 +64,7 @@ def initialiser_pool():
     """Crée la pioche initiale, stockée dans la variable globale POOL au sein de aleatoire_generation_pieces.py"""
     global POOL
     POOL = pool()  
-    print(POOL)
+    print('pioche initiale :',POOL)
 
 def extrait_pool():
     """sert à obtenir les 3 pièces aléatires du pool lors du choix du joueur. Contient toutes les contraites possibles 
@@ -72,6 +72,7 @@ def extrait_pool():
     """
     global POOL
     choix = random.sample(list(set(POOL)), 3) #on s'assure que les 3 pièces soient différentes
+
 
     return choix
 
