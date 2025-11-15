@@ -2,7 +2,7 @@ import pygame
 import json
 import os 
 from typing import Optional, List
-from .constantes import *
+from frontend.constantes import *
 import json
 
 
@@ -30,17 +30,20 @@ class Manoir:
             "antechamber": self.antechamber_img
         }
 
-        # On charge les autres rooms depuis le JSON
-        BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+        # ----------------------------
+        # Charge les rooms du JSON
+        # ----------------------------
+        BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # dossier Projet/
         json_path = os.path.join(BASE_DIR, "assets", "Data", "room_catalog.json")
 
         if os.path.exists(json_path):
-            with open(json_path, encoding="utf-8") as f:
+            with open(json_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             rooms = data.get("rooms", [])
         else:
+            print("fichier JSON introuvable :", json_path)
             rooms = []
-
+        # ...
         for r in rooms:
             room_id = r.get("id")
             image_rel = r.get("image")
@@ -48,12 +51,12 @@ class Manoir:
             if not room_id or not image_rel:
                 continue
 
-            # On évite de recharger les 2 rooms déjà faites
             if room_id in ["entrance", "antechamber"]:
                 continue
 
-            img_path = os.path.join("assets", image_rel)
+            img_path = os.path.join(BASE_DIR, "assets", image_rel)  # <- CHEMIN CORRECT
             if not os.path.exists(img_path):
+                print("Image introuvable :", img_path)
                 continue
 
             img = pygame.image.load(img_path).convert_alpha()

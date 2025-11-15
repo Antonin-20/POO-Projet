@@ -4,7 +4,7 @@ import os
 from .constantes import *
 from .joueur import Joueur
 from .inventaire import Inventaire
-from .manoir import Manoir
+from backend.manoir import Manoir
 from backend.aleatoire_generation_pieces import choix_pièce
 
 
@@ -196,6 +196,7 @@ class Jeu:
                     elif not self.phase_choix:
 
                         # orientation du joueur
+                        #sert pour direction_regard par la suite (dans manoir.py))
                         if event.key == pygame.K_z:
                             self.joueur.orienter("haut")
                         elif event.key == pygame.K_s:

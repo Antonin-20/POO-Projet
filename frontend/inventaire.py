@@ -142,16 +142,16 @@ class Inventaire:
                 img = self.room_images[room_id]
                 if room_id in self.room_orientations:
                     ori = self.room_orientations[room_id]
-                    # Rotation selon orientation
-                    if ori == "haut":
-                        img_rot = img
-                    elif ori == "droite":
-                        img_rot = pygame.transform.rotate(img, -90)
-                    elif ori == "bas":
-                        img_rot = pygame.transform.rotate(img, 180)
-                    elif ori == "gauche":
-                        img_rot = pygame.transform.rotate(img, 90)
-                    surface.blit(img_rot, (rect.x + 5, rect.y + 5))
+                    # # Rotation selon orientation
+                    # if ori == "haut":
+                    #     img_rot = img
+                    # elif ori == "droite":
+                    #     img_rot = pygame.transform.rotate(img, -90)
+                    # elif ori == "bas":
+                    #     img_rot = pygame.transform.rotate(img, 180)
+                    # elif ori == "gauche":
+                    #     img_rot = pygame.transform.rotate(img, 90)
+                    # surface.blit(img_rot, (rect.x + 5, rect.y + 5))
                 else:
                     surface.blit(img, (rect.x+5, rect.y+5))
 
