@@ -9,13 +9,47 @@ class Joueur:
         self.ligne = ligne
         self.colonne = colonne
         self.orientation = "haut"
+
         self.footprint = 70
+        self.coins = 0
+        self.gems = 2
+        self.keys = 0
+        self.dice = 0
+
+
+        
 
     def orienter(self, direction):
         self.orientation = direction
+        
 
-    def deplacer(self):
+    ORIENTATION_TO_DOOR = {
+    "haut": "N",
+    "bas": "S",
+    "gauche": "W",
+    "droite": "E"
+    }
+
+    def deplacer(self, manoir, inventaire):
         ancienne_pos = (self.ligne, self.colonne)
+
+        salle_id = manoir.grille[self.ligne][self.colonne]
+        if salle_id is None:
+            return  # pas de salle ici, déplacement impossible
+
+        # récupérer les portes de la salle actuelle
+        portes = manoir.room_doors.get(salle_id, [])
+
+        porte = self.ORIENTATION_TO_DOOR[self.orientation]
+
+        if porte not in portes:
+            inventaire.message = "Pas de porte dans cette direction !"
+            inventaire.message_timer = pygame.time.get_ticks()
+            return  # la porte dans cette direction n'existe pas
+        
+        # Réinitialiser le message si le déplacement est possible
+        inventaire.message = ""
+
         if self.orientation == "haut" and self.ligne < NB_LIGNES - 1: #cette condition évite de sortir de la grille
             self.ligne += 1
         elif self.orientation == "bas" and self.ligne > 0:

@@ -3,6 +3,8 @@ import json
 import os 
 from typing import Optional, List
 from .constantes import *
+import json
+
 
 class Manoir:
 
@@ -74,9 +76,9 @@ class Manoir:
             HAUTEUR_CASE - 2*MARGE
         )
 
-        # Contour blanc
         pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 3)
 
+        # Indication orientation
         # Orientation
         ep = 6
         rouge = (255, 0, 0)

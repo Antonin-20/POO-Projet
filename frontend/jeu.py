@@ -5,6 +5,8 @@ from .constantes import *
 from .joueur import Joueur
 from .inventaire import Inventaire
 from .manoir import Manoir
+from backend.aleatoire_generation_pieces import choix_pièce
+
 
 
 class Jeu:
@@ -29,41 +31,40 @@ class Jeu:
 
         self.menu_actif = True
 
+
     def afficher_menu(self):
-        """Affiche le menu principal avant de lancer la partie."""
-        self.screen.fill((20, 20, 30))  # fond sombre
+        self.screen.fill(COUL_MENU)
 
-        # Titre du jeu
-        font_titre = pygame.font.SysFont("arial", 60, bold=True)
-        titre = font_titre.render(" Blue Prince ", True, (200, 200, 255))
-        rect_titre = titre.get_rect(center=(self.screen.get_width()//2, 120))
-        self.screen.blit(titre, rect_titre)
+        # Titre
+        font_titre = pygame.font.SysFont("arial", 70, bold=True)
+        titre = font_titre.render("BLUE PRINCE", True, COUL_TEXTE_CYAN)
+        self.screen.blit(titre, titre.get_rect(center=(self.screen.get_width()//2, 140)))
 
-        # Message de bienvenue
+        # Sous-titre
         font_texte = pygame.font.SysFont("arial", 28)
-        bienvenue = font_texte.render("Bienvenue dans Blue Prince", True, (255, 255, 255))
-        rect_bienvenue = bienvenue.get_rect(center=(self.screen.get_width()//2, 220))
-        self.screen.blit(bienvenue, rect_bienvenue)
+        bienvenue = font_texte.render("Bienvenue", True, COUL_TEXTE)
+        self.screen.blit(bienvenue, bienvenue.get_rect(center=(self.screen.get_width()//2, 210)))
 
         # Instructions
         font_instr = pygame.font.SysFont("arial", 22)
         instructions = [
-            "Naviguer dans le jeu et le menu : Z (haut), Q (gauche), S (bas), D (droite)",
-            "Valider : Espace",
-            "Atteins l’antichambre pour gagner",
-            "Si tu n’as plus de pas, tu perds"
+            "Déplacements : Z Q S D",
+            "Choisir une porte : Q / D",
+            "Valider : ESPACE",
+            "But : Atteindre l’Antichambre avant de manquer de pas"
         ]
+
         for i, texte in enumerate(instructions):
-            ligne = font_instr.render(texte, True, (220, 220, 220))
+            ligne = font_instr.render(texte, True, COUL_TEXTE_FAIBLE)
             self.screen.blit(ligne, (100, 320 + i * 40))
 
-        # Message d’invitation à jouer
+        # Lancement
         font_start = pygame.font.SysFont("arial", 26, bold=True)
-        start = font_start.render("Appuie sur [ESPACE] pour commencer", True, (255, 220, 150))
-        rect_start = start.get_rect(center=(self.screen.get_width()//2, 600))
-        self.screen.blit(start, rect_start)
+        start = font_start.render("Appuie sur [ESPACE] pour commencer", True, COUL_DORE)
+        self.screen.blit(start, start.get_rect(center=(self.screen.get_width()//2, 600)))
 
         pygame.display.flip()
+
 
     
     def verification_fin(self):
@@ -113,6 +114,47 @@ class Jeu:
         self.screen.blit(texte1, rect1)
         self.screen.blit(texte2, rect2)
 
+    def afficher_fenetre_choix(self):
+        """Affiche une fenêtre centrale pour choisir la salle."""
+        largeur, hauteur = self.screen.get_size()
+        
+        # Taille de la fenêtre
+        fenetre_largeur = 400
+        fenetre_hauteur = 150
+        x_fen = (largeur - fenetre_largeur) // 2
+        y_fen = (hauteur - fenetre_hauteur) // 2
+
+        # Fond semi-transparent derrière la fenêtre
+        overlay = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 120))
+        self.screen.blit(overlay, (0, 0))
+
+        # Fenêtre principale
+        fenetre_rect = pygame.Rect(x_fen, y_fen, fenetre_largeur, fenetre_hauteur)
+        pygame.draw.rect(self.screen, COUL_MENU, fenetre_rect, border_radius=10)
+        pygame.draw.rect(self.screen, COUL_TEXTE, fenetre_rect, 3, border_radius=10)
+
+        # Titre
+        font_titre = pygame.font.SysFont("arial", 26, bold=True)
+        titre = font_titre.render("Choisis une salle", True, COUL_TEXTE)
+        self.screen.blit(titre, (x_fen + 20, y_fen + 10))
+
+        # Les 3 cases
+        taille_case = 80
+        espace = 25
+        base_x = x_fen + 30
+        base_y = y_fen + 50
+
+        for i in range(3):
+            rect = pygame.Rect(base_x + i*(taille_case + espace), base_y, taille_case, taille_case)
+            # couleur selon sélection
+            if i == self.inventaire.room_choice_index:
+                couleur = COUL_SELECTION
+            else:
+                couleur = COUL_CHOIX
+            pygame.draw.rect(self.screen, couleur, rect, 3, border_radius=8)
+            pygame.draw.rect(self.screen, (255,255,255), rect, 2)
+
     def boucle_principale(self):
         while True:
             for event in pygame.event.get():
@@ -120,28 +162,40 @@ class Jeu:
                     pygame.quit()
                     sys.exit()
 
+                # -----------------------------------------
+                #                MENU PRINCIPAL
+                # -----------------------------------------
                 if self.menu_actif:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                        # quitte le menu et démarre la partie
                         self.menu_actif = False
-                    # on ignore tous les autres événements tant qu'on est dans le menu
                     continue
-                
-                elif event.type == pygame.KEYDOWN and self.fin_jeu:
-                    if event.key == pygame.K_SPACE:
+
+                # -----------------------------------------
+                #                FIN DE PARTIE
+                # -----------------------------------------
+                if self.fin_jeu:
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                         self.reinitialiser_jeu()
                     continue
 
-                # Juste pour ajuster l'écran
-                elif event.type == pygame.KEYDOWN:
+                # -----------------------------------------
+                #           FULLSCREEN / RESIZE
+                # -----------------------------------------
+                if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE and self.plein_ecran:
                         self.plein_ecran = False
                         self.screen = pygame.display.set_mode((900, 720), pygame.RESIZABLE)
+
                     elif event.key == pygame.K_f:
                         self.plein_ecran = True
                         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 
-                    elif not self.phase_choix:  # phase normale
+                    # -----------------------------------------
+                    #           PHASE NORMALE (déplacement)
+                    # -----------------------------------------
+                    elif not self.phase_choix:
+
+                        # orientation du joueur
                         if event.key == pygame.K_z:
                             self.joueur.orienter("haut")
                         elif event.key == pygame.K_s:
@@ -150,44 +204,124 @@ class Jeu:
                             self.joueur.orienter("gauche")
                         elif event.key == pygame.K_d:
                             self.joueur.orienter("droite")
+
+                        # entrée en mode CHOIX DE SALLE
                         elif event.key == pygame.K_SPACE:
-                            # Active la phase de choix
-                            self.phase_choix = True
-                            self.inventaire.afficher_room_choices = True
-                    else:  # phase de choix
+                             # --- 1) CALCULER LA CASE CIBLE EN FONCTION DE L’ORIENTATION ---
+                            cible_ligne = self.joueur.ligne
+                            cible_colonne = self.joueur.colonne
+
+                            if self.joueur.orientation == "haut" and self.joueur.ligne < NB_LIGNES - 1:
+                                cible_ligne += 1
+                            elif self.joueur.orientation == "bas" and self.joueur.ligne > 0:
+                                cible_ligne -= 1
+                            elif self.joueur.orientation == "gauche" and self.joueur.colonne > 0:
+                                cible_colonne -= 1
+                            elif self.joueur.orientation == "droite" and self.joueur.colonne < NB_COLONNES - 1:
+                                cible_colonne += 1
+                            else:
+                                # bord de grille
+                                self.inventaire.message = "Il n'y a pas de porte dans cette direction"
+                                continue
+
+                            # --- 2) VERIFIER SI LA PORTE EXISTE DANS CETTE ORIENTATION ---
+                            salle_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
+                            portes = self.manoir.room_doors.get(salle_actuelle, [])
+                            porte_orientation = self.joueur.ORIENTATION_TO_DOOR[self.joueur.orientation]
+
+                            if porte_orientation not in portes:
+                                # pas de porte → afficher message
+                                self.joueur.deplacer(self.manoir, self.inventaire)
+                                continue
+
+                            else:
+                                # on efface le message précédent
+                                self.inventaire.message = ""
+
+                            # --- 3) REGARDER SI UNE SALLE EXISTE DÉJÀ SUR LA CASE CIBLE ---
+                            salle_cible = self.manoir.grille[cible_ligne][cible_colonne]
+
+                            if salle_cible is not None:
+                                # case déjà occupée → déplacement direct sans popup
+                                self.joueur.deplacer(self.manoir, self.inventaire)
+                                self.verification_fin()
+                            else:
+                                # case vide → entrer en phase choix
+                                self.phase_choix = True
+                                self.inventaire.afficher_room_choices = True
+
+                                # Tirer 3 salles aléatoires (sans entrance / antechamber)
+                                self.inventaire.room_choices = []
+                                while len(self.inventaire.room_choices) < 3:
+                                    room_id = choix_pièce()
+                                    if room_id not in ("entrance", "antechamber"):
+                                        self.inventaire.room_choices.append(room_id)
+
+                                self.inventaire.room_choice_index = 0
+
+                    # -----------------------------------------
+                    #           PHASE CHOIX DE SALLE
+                    # -----------------------------------------
+                    else:
                         if event.key == pygame.K_q:
                             self.inventaire.changer_selection("gauche")
-                        elif event.key == pygame.K_d: 
+
+                        elif event.key == pygame.K_d:
                             self.inventaire.changer_selection("droite")
+
                         elif event.key == pygame.K_SPACE:
-                            # Confirmation du choix
+                            # quitter la fenêtre de choix
                             self.phase_choix = False
                             self.inventaire.afficher_room_choices = False
-                            self.joueur.deplacer()
+
+                            # mémoriser l’ancienne position (si besoin)
+                            ancienne_ligne = self.joueur.ligne
+                            ancienne_colonne = self.joueur.colonne
+
+                            # déplacement réel du joueur
+                            self.joueur.deplacer(self.manoir, self.inventaire)
+
+                            # --- RÉCUPÉRER LA PIÈCE CHOISIE DANS LE POPUP ---
+                            if self.inventaire.room_choices:
+                                room_id = self.inventaire.room_choices[self.inventaire.room_choice_index]
+                            else:
+                                room_id = None  # sécurité
+
+                            # --- PLACER LA PIÈCE DANS LA GRILLE ---
+                            if room_id is not None:
+                                # on vérifie qu'on n'écrase pas entrée/antichambre par accident
+                                if self.manoir.grille[self.joueur.ligne][self.joueur.colonne] is None:
+                                    self.manoir.grille[self.joueur.ligne][self.joueur.colonne] = room_id
+
+                            # test de fin
                             self.verification_fin()
 
-                elif event.type == pygame.VIDEORESIZE and not self.plein_ecran:
+                # -----------------------------------------
+                #         REDIMENSIONNEMENT DE FENÊTRE
+                # -----------------------------------------
+                if event.type == pygame.VIDEORESIZE and not self.plein_ecran:
                     self.screen = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
 
+            # -----------------------------------------
+            #              AFFICHAGE GLOBAL
+            # -----------------------------------------
+
             if self.menu_actif:
-
-                self.afficher_menu()  # affiche le menu
-
+                self.afficher_menu()
             else:
-            
                 largeur, hauteur = self.screen.get_size()
                 self.screen.fill(COUL_FOND)
 
-                self.manoir.ajout_piece(self.screen, self.joueur, 0, 0) #y_offset = 90
-                #x_offset = 0 car la grille commence tout à gauche
-                #hauteur = 900
-                #HAUTEUR_GRILLE_FIXE = 720 => hauteur occupé de par la grille
-                #espace libre = 900 - 720 = 180
-                #on divise par 2 pour centrer verticalement => 90 pixels en haut et 90 pixels en bas
+                # manoir centré verticalement
+                self.manoir.ajout_piece(self.screen, self.joueur, 0, 0)
 
+                # inventaire à droite
                 self.inventaire.affichage(self.screen, self.joueur, largeur, hauteur, self.font)
-
+                
+                # fenêtre de fin
                 if self.fin_jeu:
                     self.afficher_message_fin()
+
                 pygame.display.flip()
-                self.clock.tick(30)
+
+            self.clock.tick(30)
