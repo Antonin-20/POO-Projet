@@ -7,6 +7,7 @@ from .constantes import *
 
 
 
+
 class Manoir:
     def __init__(self):
         self.entrance_img = pygame.transform.smoothscale(
@@ -21,7 +22,7 @@ class Manoir:
         #2 pièces sont toujours initialisées : l'entrée et l'antichambre
         self.grille[0][2] = "entrance"
         self.grille[NB_LIGNES-1][2] = "antechamber"
-
+    
 
     def ajout_piece(self, surface, joueur, x_offset=0, y_offset=0):
 

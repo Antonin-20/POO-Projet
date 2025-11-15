@@ -5,6 +5,8 @@ from .constantes import *
 from .joueur import Joueur
 from .inventaire import Inventaire
 from .manoir import Manoir
+from backend.aleatoire_generation_pieces import choix_pièce
+
 
 
 class Jeu:
@@ -28,6 +30,7 @@ class Jeu:
         self.victoire = False
 
         self.menu_actif = True
+
 
     def afficher_menu(self):
         self.screen.fill(COUL_MENU)
@@ -206,6 +209,9 @@ class Jeu:
                         elif event.key == pygame.K_SPACE:
                             self.phase_choix = True
                             self.inventaire.afficher_room_choices = True
+                            # Tirage aléatoire des 3 choix depuis backend
+                            self.inventaire.room_choices = [choix_pièce() for _ in range(3)]
+                            self.inventaire.room_choice_index = 0
 
                     # -----------------------------------------
                     #           PHASE CHOIX DE SALLE
