@@ -42,6 +42,9 @@ class Inventaire:
         self.message = ""
         self.message_timer = 0
 
+        # --- Orientation des pièces tirées dans le popup ---
+        self.room_orientations = {}
+
     # --- Affichage de l'inventaire et du popup ---
     def affichage(self, surface, joueur, largeur_fenetre, hauteur_fenetre, font):
         x_inv = LARGEUR_GRILLE_FIXE
@@ -75,7 +78,7 @@ class Inventaire:
                 surface.blit(texte_msg, (pos_x_current_pos, pos_y_current_pos + taille_case + 10))
             else:
                 self.message = ""  # effacer après 3 secondes
-                
+
         # Compteurs
         compteur_texte = font.render(str(joueur.footprint), True, COUL_TEXTE)
         x_compteur = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_texte.get_width() - 10
@@ -136,7 +139,21 @@ class Inventaire:
 
             # Image de la pièce
             if room_id in self.room_images:
-                surface.blit(self.room_images[room_id], (rect.x+5, rect.y+5))
+                img = self.room_images[room_id]
+                if room_id in self.room_orientations:
+                    ori = self.room_orientations[room_id]
+                    # Rotation selon orientation
+                    if ori == "haut":
+                        img_rot = img
+                    elif ori == "droite":
+                        img_rot = pygame.transform.rotate(img, -90)
+                    elif ori == "bas":
+                        img_rot = pygame.transform.rotate(img, 180)
+                    elif ori == "gauche":
+                        img_rot = pygame.transform.rotate(img, 90)
+                    surface.blit(img_rot, (rect.x + 5, rect.y + 5))
+                else:
+                    surface.blit(img, (rect.x+5, rect.y+5))
 
         font_small = pygame.font.SysFont("arial", 18)
         txt = font_small.render("(Q D pour choisir • ESPACE pour valider)", True, COUL_TEXTE_FAIBLE)

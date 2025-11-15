@@ -252,10 +252,16 @@ class Jeu:
 
                                 # Tirer 3 salles aléatoires (sans entrance / antechamber)
                                 self.inventaire.room_choices = []
+                                self.inventaire.room_orientations = {}
                                 while len(self.inventaire.room_choices) < 3:
                                     room_id = choix_pièce()
+
                                     if room_id not in ("entrance", "antechamber"):
+
                                         self.inventaire.room_choices.append(room_id)
+
+                                        # stocker orientation pour aligner avec porte actuelle du joueur
+                                        self.inventaire.room_orientations[room_id] = self.joueur.orientation
 
                                 self.inventaire.room_choice_index = 0
 
@@ -292,6 +298,10 @@ class Jeu:
                                 # on vérifie qu'on n'écrase pas entrée/antichambre par accident
                                 if self.manoir.grille[self.joueur.ligne][self.joueur.colonne] is None:
                                     self.manoir.grille[self.joueur.ligne][self.joueur.colonne] = room_id
+
+                                    # --- Appliquer l'orientation stockée ---
+                                    orientation = self.inventaire.room_orientations.get(room_id, "haut")
+                                    self.manoir.room_orientations[self.joueur.ligne][self.joueur.colonne] = orientation
 
                             # test de fin
                             self.verification_fin()
