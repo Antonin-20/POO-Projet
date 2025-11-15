@@ -4,6 +4,7 @@ import os
 from .constantes import *
 from .joueur import Joueur
 from .inventaire import Inventaire
+from .popup import Popup
 from backend.piece import Piece
 from backend.manoir import Manoir
 from backend.aleatoire_generation_pieces import *
@@ -20,8 +21,9 @@ class Jeu:
 
         # instanciation des classes
         self.joueur = Joueur() # objet joueur
-        self.inventaire = Inventaire() # objet inventaire
+        self.inventaire = Inventaire(room_catalog) # objet inventaire
         self.manoir = Manoir(room_catalog) # objet manoir
+        self.popup = Popup() # objet popup
 
         self.plein_ecran = False
         self.phase_choix = False  # vrai quand on choisit une salle
@@ -162,11 +164,14 @@ class Jeu:
         # Tirer 3 pièces depuis le pool
         choix = extrait_pool()
 
-        # Stocker pour le pop-up
-        self.inventaire.room_choices = choix
-        self.inventaire.room_choice_index = 0
-        self.inventaire.afficher_room_choices = True
+
+        self.popup.room_choices = choix # stocke les 3 pièces
+        self.popup.room_choice_index = 0
+        self.popup.afficher = True # Pour afficher le popup
         self.phase_choix = True
+
+
+
 
         # while self.phase_choix:
         #     for event in pygame.event.get():
@@ -319,15 +324,15 @@ class Jeu:
                     # -----------------------------------------
                     else:
                         if event.key == pygame.K_q:
-                            self.inventaire.changer_selection("gauche")
+                            self.popup.changer_selection("gauche")
 
                         elif event.key == pygame.K_d:
-                            self.inventaire.changer_selection("droite")
+                            self.popup.changer_selection("droite")
 
                         elif event.key == pygame.K_SPACE:
                             # quitter la fenêtre de choix
                             self.phase_choix = False
-                            self.inventaire.afficher_room_choices = False
+                            self.popup.afficher = False
 
                             # mémoriser l’ancienne position (si besoin)
                             ancienne_ligne = self.joueur.ligne
@@ -337,7 +342,7 @@ class Jeu:
                             self.joueur.deplacer(self.manoir, self.inventaire)
 
                             # --- PLACER LA PIÈCE DANS LA GRILLE COMME INSTANCE ---
-                            room_id = self.inventaire.room_choices[self.inventaire.room_choice_index]
+                            room_id = self.popup.room_choices[self.popup.room_choice_index]
                             if room_id is not None:
                                 # vérifier qu'on n'écrase pas entrée/antichambre
                                 if self.manoir.grille[self.joueur.ligne][self.joueur.colonne] is None:
@@ -375,6 +380,10 @@ class Jeu:
 
                 # inventaire à droite
                 self.inventaire.affichage(self.screen, self.joueur, largeur, hauteur, self.font)
+
+                # --- Affichage du popup si actif ---
+                if self.popup.afficher:
+                    self.popup.affichage_popup(self.screen, largeur, hauteur)
                 
                 # fenêtre de fin
                 if self.fin_jeu:

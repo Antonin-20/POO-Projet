@@ -1,11 +1,12 @@
 from backend.loader import charger_catalogue
+from typing import Tuple
 
 ROOM_CATALOG = charger_catalogue() #on récupère le catalogue des pièces depuis le loader
 
 #print(ROOM_CATALOG["kitchen"]["doors"]) #je me garde un exemple d'accès aux données du catalogue, ne pas suppr tt de suite svp
 
 class Piece :
-    def __init__(self, id_piece: str, position: tuple[int, int], direction_regard: str):
+    def __init__(self, id_piece: str, position: Tuple[int, int], direction_regard: str):
         """Classe permettant de créer une instance de pièce lors du dessin.
 
         Args:
