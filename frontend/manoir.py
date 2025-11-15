@@ -27,7 +27,7 @@ class Manoir:
         self.grille[NB_LIGNES-1][2] = "antechamber"
 
 
-        # --- dictionnaire id -> image pygame pour toutes les pièces ---
+        # --- c'est ici qu'on va charger toutes les pieces du json ---
         self.images = {
             "entrance": self.entrance_img,
             "antechamber": self.antechamber_img
@@ -65,6 +65,8 @@ class Manoir:
                 (LARGEUR_CASE - 4 * MARGE, HAUTEUR_CASE - 4 * MARGE)
             )
             self.images[room_id] = img
+        
+        self.room_doors = {r['id']: r['doors'] for r in rooms}
     
 
     def ajout_piece(self, surface, joueur, x_offset=0, y_offset=0):

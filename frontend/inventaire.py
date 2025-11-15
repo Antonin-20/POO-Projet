@@ -38,6 +38,9 @@ class Inventaire:
                 img = pygame.image.load(chemin).convert_alpha()
                 img = pygame.transform.smoothscale(img, (taille_popup-10, taille_popup-10))
                 self.room_images[r["id"]] = img
+        
+        self.message = ""
+        self.message_timer = 0
 
     # --- Affichage de l'inventaire et du popup ---
     def affichage(self, surface, joueur, largeur_fenetre, hauteur_fenetre, font):
@@ -56,13 +59,23 @@ class Inventaire:
         # Case "Pièce actuelle"
         titre2 = font.render("Pièce actuelle", True, COUL_TEXTE)
         surface.blit(titre2, (x_inv + 130, inventaire_y - 440))
+
         taille_case = 180
-        pos_x = x_inv + 100
-        pos_y = inventaire_y - 400
-        joueur_rect = pygame.Rect(pos_x, pos_y, taille_case, taille_case)
+        pos_x_current_pos = x_inv + 100
+        pos_y_current_pos = inventaire_y - 400
+        joueur_rect = pygame.Rect(pos_x_current_pos, pos_y_current_pos, taille_case, taille_case)
         pygame.draw.rect(surface, (100, 100, 150), joueur_rect)
         pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 3)
 
+        if self.message and pygame.time.get_ticks() - self.message_timer < 3000:
+            elapsed = pygame.time.get_ticks() - self.message_timer
+            if elapsed < 3000:  # moins de 3 secondes
+                font_msg = pygame.font.SysFont("arial", 20)
+                texte_msg = font_msg.render(self.message, True, (255, 255, 150))  # couleur dorée
+                surface.blit(texte_msg, (pos_x_current_pos, pos_y_current_pos + taille_case + 10))
+            else:
+                self.message = ""  # effacer après 3 secondes
+                
         # Compteurs
         compteur_texte = font.render(str(joueur.footprint), True, COUL_TEXTE)
         x_compteur = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_texte.get_width() - 10

@@ -207,7 +207,7 @@ class Jeu:
 
                         # entrée en mode CHOIX DE SALLE
                         elif event.key == pygame.K_SPACE:
-                            # --- 1) CALCULER LA CASE CIBLE EN FONCTION DE L’ORIENTATION ---
+                             # --- 1) CALCULER LA CASE CIBLE EN FONCTION DE L’ORIENTATION ---
                             cible_ligne = self.joueur.ligne
                             cible_colonne = self.joueur.colonne
 
@@ -220,28 +220,42 @@ class Jeu:
                             elif self.joueur.orientation == "droite" and self.joueur.colonne < NB_COLONNES - 1:
                                 cible_colonne += 1
                             else:
-                                # déplacement impossible (bord de grille) → on ne fait rien
+                                # bord de grille
+                                self.inventaire.message = "Il n'y a pas de porte dans cette direction"
                                 continue
 
-                            # --- 2) REGARDER SI UNE SALLE EXISTE DÉJÀ SUR LA CASE CIBLE ---
+                            # --- 2) VERIFIER SI LA PORTE EXISTE DANS CETTE ORIENTATION ---
+                            salle_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
+                            portes = self.manoir.room_doors.get(salle_actuelle, [])
+                            porte_orientation = self.joueur.ORIENTATION_TO_DOOR[self.joueur.orientation]
+
+                            if porte_orientation not in portes:
+                                # pas de porte → afficher message
+                                self.joueur.deplacer(self.manoir, self.inventaire)
+                                continue
+
+                            else:
+                                # on efface le message précédent
+                                self.inventaire.message = ""
+
+                            # --- 3) REGARDER SI UNE SALLE EXISTE DÉJÀ SUR LA CASE CIBLE ---
                             salle_cible = self.manoir.grille[cible_ligne][cible_colonne]
 
                             if salle_cible is not None:
-                                # Il y a déjà une salle -> déplacement direct sans popup
-                                self.joueur.deplacer()
+                                # case déjà occupée → déplacement direct sans popup
+                                self.joueur.deplacer(self.manoir, self.inventaire)
                                 self.verification_fin()
                             else:
-                                # Case vide -> on entre en phase de choix
+                                # case vide → entrer en phase choix
                                 self.phase_choix = True
                                 self.inventaire.afficher_room_choices = True
 
-                                # Tirer 3 rooms aléatoires (sans entrance / antechamber)
+                                # Tirer 3 salles aléatoires (sans entrance / antechamber)
                                 self.inventaire.room_choices = []
-                                for _ in range(3):
+                                while len(self.inventaire.room_choices) < 3:
                                     room_id = choix_pièce()
-                                    while room_id in ("entrance", "antechamber"):
-                                        room_id = choix_pièce()
-                                    self.inventaire.room_choices.append(room_id)
+                                    if room_id not in ("entrance", "antechamber"):
+                                        self.inventaire.room_choices.append(room_id)
 
                                 self.inventaire.room_choice_index = 0
 
@@ -265,7 +279,7 @@ class Jeu:
                             ancienne_colonne = self.joueur.colonne
 
                             # déplacement réel du joueur
-                            self.joueur.deplacer()
+                            self.joueur.deplacer(self.manoir, self.inventaire)
 
                             # --- RÉCUPÉRER LA PIÈCE CHOISIE DANS LE POPUP ---
                             if self.inventaire.room_choices:
