@@ -33,7 +33,7 @@
       "doors": ["N", "S"],
       "placement": { "border": 0 },
       "loot": [
-        { "id": "key", "qty": { "min": 1, "max": 2 }, "p": 1 }
+        { "id": "key", "qty": { "min": 1, "max": 2 }, "p": 0.2 }
       ]
     },
     {
@@ -132,9 +132,9 @@
             "type": "pool",
             "take": 1,
             "items": [
-            { "id": "banana", "qty": 1, "p": 1 },
-            { "id": "orange", "qty": 1, "p": 1 },
-            { "id": "gem",    "qty": { "min": 1, "max": 2 }, "p": 1 }
+            { "id": "banana", "qty": 1, "p": 0.2 },
+            { "id": "orange", "qty": 1, "p": 0.2 },
+            { "id": "gem",    "qty": { "min": 1, "max": 2 }, "p": 0.35 }
             ]
         }
       ]
@@ -175,9 +175,9 @@
       "doors": ["S", "E", "W"],
       "placement": { "border": 0 },
       "loot": [
-        { "id": "apple", "qty": 1, "p": 0.33 },
-        { "id": "gem",   "qty": 1, "p": 0.33 },
-        {"id": "key", "qty":1, "p":0.33}
+        { "id": "apple", "qty": 1, "p": 0.3 },
+        { "id": "gem",   "qty": 1, "p": 0.2 },
+        {"id": "key", "qty":1, "p":0.2}
       ]
     },
     {
@@ -190,9 +190,9 @@
       "doors": ["N", "S"],
       "placement": { "border": 0 },
       "loot": [
-        { "id": "apple", "qty": 1, "p": 0.5 },
-        { "id": "key",   "qty": 1, "p": 0.5 },
-        { "id": "gem",   "qty": 1, "p": 0.5 }
+        { "id": "apple", "qty": 1, "p": 0.2 },
+        { "id": "key",   "qty": 1, "p": 0.1 },
+        { "id": "gem",   "qty": 1, "p": 0.1 }
       ]
     },
     {
@@ -216,9 +216,9 @@
       "doors": ["S", "E", "W"],
       "placement": { "border": 2 },
       "loot": [
-        { "id": "apple", "qty": 1, "p": 0.5 },
-        { "id": "key",   "qty": 1, "p": 0.5 },
-        { "id": "die",   "qty": 2, "p": 0.5 }
+        { "id": "apple", "qty": 1, "p": 0.2 },
+        { "id": "key",   "qty": 1, "p": 0.2 },
+        { "id": "die",   "qty": 2, "p": 0.3 }
       ]
     },
     {
@@ -231,8 +231,8 @@
       "doors": ["S", "E", "W"],
       "placement": { "border": 1 },
       "loot": [
-        { "id": "apple", "qty": 1, "p": 0.75 },
-        { "id": "key",   "qty": 1, "p": 0.75 }
+        { "id": "apple", "qty": 1, "p": 0.2 },
+        { "id": "key",   "qty": 1, "p": 0.2 }
       ]
     }
   ]

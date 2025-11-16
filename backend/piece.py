@@ -37,15 +37,13 @@ class Piece :
 
         self.doors = ROOM_CATALOG[self.id]["doors"]
         self.doors = self.calculer_portes_orientees()  #on modifie les portes selon l'orientation
-        print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
+        #print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
         self.locked_doors = self.which_locked_door()
-        print(f"État des portes de la pièce {self.id} : {self.locked_doors}")
+        #print(f"État des portes de la pièce {self.id} : {self.locked_doors}")
 
         self.placement = ROOM_CATALOG[self.id]["placement"] 
         self.loot_table = ROOM_CATALOG[self.id]["loot"] 
-
-        self.objets_speciaux = objets_speciaux   
-
+        self.objets_speciaux = objets_speciaux
         self.loot = self.generer_loot(self.objets_speciaux) #on génère le loot de la pièce à sa création
 
     
@@ -145,7 +143,7 @@ class Piece :
 
         table = self.loot_table[0]
 
-        #loot obligatoire
+        #loot obligatoire, pour les closets
         if "type" in table and table["type"] == "pool":
 
             items = table["items"]
@@ -184,11 +182,14 @@ class Piece :
                 else:
                     n = qty
 
-                p = item["p"] if "p" in item else 1
+                p = item["p"] if "p" in item else 1 #probabilité de loot l'item
 
                 if "metal_detector" in objets_speciaux and item["id"] in ["key", "coin"]:
-                    p = min(1, p * 2)  # double la probabilité d'avoir un objet clé ou pièce (normalement max 1 mais on sécurise, en fct de comment la table de loot a été codée...)
+                    p = min(1, p * 2)   # double la probabilité d'avoir un objet clé ou pièce (normalement max 1 mais on sécurise, en fct de comment la table de loot a été codée...)
 
+                if "lucky_paw" in objets_speciaux:
+                    p = min(1, p + p * 0.20)     #la patte de lapin rajoute +20% de chance de tirer l'objet de la valeur actuelle
+  
                 for _ in range(n):
                     if random.random() < p:
                         resultat.append(item["id"])
