@@ -234,6 +234,34 @@
         { "id": "apple", "qty": 1, "p": 0.2 },
         { "id": "key",   "qty": 1, "p": 0.2 }
       ]
+    },
+    {
+      "id": "den",
+      "name": "Den",
+      "color": "BLUE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "Images/rooms/West_Wing_Hall.png",
+      "doors": ["S", "E", "W"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "gem", "qty": 1, "p": 1 },
+        { "id": "die", "qty": 2, "p": 0.15 }
+      ]
+    },
+    {
+      "id": "nook",
+      "name": "Nook",
+      "color": "BLUE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "Images/rooms/West_Wing_Hall.png",
+      "doors": ["S", "E", "W"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "key", "qty": 1, "p": 1 },
+        { "id": "die", "qty": 1, "p": 0.15 }
+      ]
     }
   ]
 }
