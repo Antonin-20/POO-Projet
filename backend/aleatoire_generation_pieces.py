@@ -85,6 +85,9 @@ def extrait_pool(catalog,ligne,colonne):
         """
         data = catalog[piece_id]
         border = data["placement"]["border"]
+        doors = data["doors"]                       #à exploiter pour éviter de tomber sur des couloirs sans issue
+
+
 
         if border == 0:  # partout
             return True
@@ -96,16 +99,26 @@ def extrait_pool(catalog,ligne,colonne):
             return colonne == 4
 
         if border == 3:  # EST ou OUEST
-            return colonne in (0, 4)
+            return colonne in (0,4)
 
-        if border == 4:  # aucune case permise
-            return False
+        if border == 4:  # pas dans une aile
+            return colonne not in (0,4)
+        
 
         return True
     
     global POOL
 
-    choix = random.sample(list(set(POOL)), 3) #on s'assure que les 3 pièces soient différentes
+    pool_filtré = [p for p in POOL if piece_est_valide(p)]  #on ne garde que les pièces valides pour cette position
+
+    #s'il reste moins de 3 pièces valides dans le pool, message d'erreur
+    if len(pool_filtré) < 3:
+        print("Il n'y a plus assez de pièces valides pour cet emplacement")
+        #faire quand même un pool, mais sans contrainetr
+        pool_filtré = list(set(POOL))
+
+    choix = random.sample(list(set(pool_filtré)), 3) #on s'assure que les 3 pièces soient différentes
+    print('pioche filtrée:',choix)
 
 
     return choix
