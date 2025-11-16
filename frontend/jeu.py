@@ -85,10 +85,13 @@ class Jeu:
             self.fin_jeu = True
             self.message_fin = "perdu, t'as plus de pas"
 
-    def reinitialiser_jeu(self):
+    def reinitialiser_jeu(self, room_catalog):
         """Réinitialise les variables du jeu pour une nouvelle partie."""
         self.joueur = Joueur()
-        self.inventaire = Inventaire()
+        self.inventaire = Inventaire(room_catalog)
+        self.manoir = Manoir(room_catalog)
+        self.popup = Popup(self.joueur)
+        self.menu_actif = True
         self.phase_choix = False
         self.message_fin = ""
         self.fin_jeu = False
@@ -202,7 +205,7 @@ class Jeu:
 
 
 
-    def boucle_principale(self):
+    def boucle_principale(self, room_catalog):
         while True:
                 
             for event in pygame.event.get():
@@ -223,7 +226,7 @@ class Jeu:
                 # -----------------------------------------
                 if self.fin_jeu:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                        self.reinitialiser_jeu()
+                        self.reinitialiser_jeu(room_catalog)
                     continue
 
                 # -----------------------------------------
@@ -270,7 +273,8 @@ class Jeu:
                                 cible_colonne += 1
                             else:
                                 # bord de grille
-                                self.inventaire.message = "Il n'y a pas de porte dans cette direction"
+                                self.inventaire.message = "Pas de porte dans cette direction"
+                                self.inventaire.message_timer = pygame.time.get_ticks()
                                 continue
 
                             # --- 2) VERIFIER SI LA PORTE EXISTE DANS CETTE ORIENTATION ---
@@ -280,30 +284,16 @@ class Jeu:
                             else:
                                 portes_depart = []
 
-                            # Calcul position cible selon orientation
-                            cible_ligne = self.joueur.ligne
-                            cible_colonne = self.joueur.colonne
-                            if self.joueur.orientation == "haut" and self.joueur.ligne < NB_LIGNES - 1:
-                                cible_ligne += 1
-                            elif self.joueur.orientation == "bas" and self.joueur.ligne > 0:
-                                cible_ligne -= 1
-                            elif self.joueur.orientation == "gauche" and self.joueur.colonne > 0:
-                                cible_colonne -= 1
-                            elif self.joueur.orientation == "droite" and self.joueur.colonne < NB_COLONNES - 1:
-                                cible_colonne += 1
-                            else:
-                                self.inventaire.message = "Il n'y a pas de porte dans cette direction"
-                                continue
-
                             # Pièce cible (si elle existe)
                             piece_cible = self.manoir.grille[cible_ligne][cible_colonne]
                             portes_cible = piece_cible.doors if piece_cible else []
 
-                            # Vérification cohérence double porte
+                            
                             porte_depart = self.joueur.ORIENTATION_TO_DOOR[self.joueur.orientation]
                             opposite = {"N":"S", "S":"N", "E":"W", "W":"E"}
                             porte_arrivee = opposite[porte_depart]
 
+                            # Vérification cohérence double porte (si une porte rencontre un mur)
                             if porte_depart not in portes_depart or (piece_cible and porte_arrivee not in portes_cible):
                                 self.inventaire.message = "Pas de porte dans cette direction !"
                                 self.inventaire.message_timer = pygame.time.get_ticks()

@@ -29,6 +29,7 @@ class Inventaire:
         
         self.message = ""
         self.message_timer = 0
+        self.message_duration = 1000  # durée en ms (1s)
 
         self.taille_case_piece = 180 #même taille que la case "pièce actuelle"
 
@@ -94,7 +95,7 @@ class Inventaire:
                 surface.blit(img, joueur_rect.topleft)
 
         #Affichage du message quand pas de portes 
-        if self.message and pygame.time.get_ticks() - self.message_timer < 3000:
+        if self.message and pygame.time.get_ticks() - self.message_timer < self.message_duration:
             elapsed = pygame.time.get_ticks() - self.message_timer
             if elapsed < 3000:  # moins de 3 secondes
                 font_msg = pygame.font.SysFont("arial", 20)
