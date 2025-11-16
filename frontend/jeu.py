@@ -136,6 +136,7 @@ class Jeu:
         self.inventaire = Inventaire(room_catalog)
         self.manoir = Manoir(room_catalog)
         self.popup = Popup(self.joueur)
+        initialiser_pool()
         self.menu_actif = True
         self.phase_choix = False
         self.message_fin = ""
@@ -428,7 +429,7 @@ class Jeu:
 
                 
                 # -----------------------------------------
-                #       RÉCUPÉRATION D’OBJETS (loot)
+                #       RÉCUPÉRATION D’OBJETS (loot) DE LA PIECE ACTUELLE
                 # -----------------------------------------
 
                 if piece_actuelle and piece_actuelle.loot:
@@ -445,7 +446,7 @@ class Jeu:
                     )
                     
                     if mouse_click:
-                        print("ffvsvsf")
+                    
                         for i, rect in enumerate(zones_loot):
                             if rect.collidepoint(mouse_pos):
                                 objet = piece_actuelle.loot[i]
@@ -492,10 +493,9 @@ class Jeu:
                 # inventaire à droite
                 self.inventaire.affichage(self.screen, self.joueur, largeur, hauteur, self.font, self.manoir)
 
+                # Affichage des objets contenus dans la pièce actuelle du joueur
                 piece_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
-
-
-                if piece_actuelle:
+                if piece_actuelle: # On vérifie si on est dans une pièce au cas ou
                     self.inventaire.affichage_objet_piece(
                         loot=piece_actuelle.loot,
                         surface=self.screen,
@@ -505,7 +505,6 @@ class Jeu:
                     
                     )
         
-
                 # --- Affichage du popup si actif ---
                 if self.popup.afficher:
                     self.popup.affichage_popup(self.screen, largeur, hauteur)

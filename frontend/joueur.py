@@ -44,10 +44,6 @@ class Joueur:
         self.dice = 10
         self.objets_speciaux = []
 
-        # Pièce actuelle du joueur
-        self.piece = Piece("entrance", (ligne, colonne), self.orientation) # a changer les paramètres
-
-
 
     def orienter(self, direction):
         """
