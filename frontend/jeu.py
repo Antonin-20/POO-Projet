@@ -24,6 +24,7 @@ class Jeu:
         self.inventaire = Inventaire(room_catalog) # objet inventaire
         self.manoir = Manoir(room_catalog) # objet manoir
         self.popup = Popup(self.joueur) # objet popup
+       
 
         self.plein_ecran = False
         self.phase_choix = False  # vrai quand on choisit une salle
@@ -85,7 +86,7 @@ class Jeu:
             self.fin_jeu = True
             self.message_fin = "perdu, t'as plus de pas"
 
-    def reinitialiser_jeu(self):
+    def reinitialiser_jeu(self, room_catalog):
         """Réinitialise les variables du jeu pour une nouvelle partie.
         pas fonctionnel pour le momment : il faut remettre à zéro le pool, le manoir et retirer un pool, un manoir, etc..."""
         self.joueur = Joueur()
@@ -389,6 +390,18 @@ class Jeu:
 
                 # inventaire à droite
                 self.inventaire.affichage(self.screen, self.joueur, largeur, hauteur, self.font, self.manoir)
+
+                piece_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
+                if piece_actuelle:
+                    self.inventaire.affichage_objet_piece(
+                        loot=piece_actuelle.loot,
+                        surface=self.screen,
+                        joueur=self.joueur,
+                        largeur_fenetre=largeur,
+                        hauteur_fenetre=hauteur
+                    
+                    )
+        
 
                 # --- Affichage du popup si actif ---
                 if self.popup.afficher:

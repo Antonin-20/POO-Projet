@@ -46,12 +46,7 @@ class Inventaire:
 
 
     # --- Affichage de l'inventaire ---
-    """
-    
-    Cette méthode affiche le compteur des objets, la case actuelle du joueur et un message si le joueur
-    rencontre un mur
-                                     
-    """
+
     def affichage(self, surface, joueur, largeur_fenetre, hauteur_fenetre, font, manoir):
         """
     
@@ -70,6 +65,10 @@ class Inventaire:
         # Titre "Inventaire"
         titre = font.render("Inventaire", True, COUL_TEXTE)
         surface.blit(titre, (x_inv + 20, inventaire_y - 120))
+
+        # Titre "Contenu"
+        titre1 = font.render("Contenu", True, COUL_TEXTE)
+        surface.blit(titre1, (900 - 150 , inventaire_y - 120))
 
         # Case "Pièce actuelle"
         titre2 = font.render("Pièce actuelle", True, COUL_TEXTE)
@@ -104,7 +103,7 @@ class Inventaire:
             else:
                 self.message = ""  # effacer après 3 secondes
 
-        # Compteurs
+        # ---- Compteurs ------
         compteur_texte = font.render(str(joueur.footprint), True, COUL_TEXTE)
         x_compteur = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_texte.get_width() - 10
         y_compteur = 68
@@ -132,3 +131,31 @@ class Inventaire:
             x = x_inv + largeur_inv - TAILLE_ICONE - marge_x
             y = marge_y + i * (TAILLE_ICONE + espace)
             surface.blit(img, (x, y))
+
+    def affichage_objet_piece(self, loot, surface, joueur, largeur_fenetre, hauteur_fenetre):
+        """Méthode qui affiche les objets présents dans la pièce actuelle du joueur.
+        Args:
+            loot (list): liste des objets présents dans la pièce actuelle
+            surface (pygame.Surface): surface sur laquelle dessiner
+            joueur (Joueur): instance du joueur
+            largeur_fenetre (int): largeur de la fenêtre
+            hauteur_fenetre (int): hauteur de la fenêtre
+            font (pygame.font.Font): police pour le texte
+        """
+
+        if not loot:
+            # afficher un message "Aucun objet dans cette pièce"
+            return
+        
+        else:
+            
+            x_position = largeur_fenetre - 150
+            y_position = hauteur_fenetre - 260
+            espacement = 30
+            font = pygame.font.SysFont("arial", 18)
+            
+
+            for i, obj in enumerate(loot):
+                texte_surface = font.render(obj, True, COUL_TEXTE)
+                surface.blit(texte_surface, (x_position, y_position + i * espacement))
+    
