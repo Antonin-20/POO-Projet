@@ -100,6 +100,17 @@ class Piece :
                     etat_portes.append(0)  #0 = porte déverrouillée
 
         return etat_portes
+    
+    def utiliser_cle(self, porte_index):
+        """Permet de déverrouiller une porte verrouillée si le joueur utilise une clé dessus.
+
+        Args:
+            porte_index (int): index de la porte à déverrouiller dans la liste des portes de la pièce -> p.e utiliser l'orientation du regard plutôt
+        """
+        if self.locked_doors[porte_index] == 1:  #si la porte est verrouillée
+            self.locked_doors[porte_index] = 0   #on la déverrouille
+            return None                           #indique que la porte a été déverrouillée
+        return None                              #indique que la porte était déjà déverrouillée
 
 
     def generer_loot(self):
