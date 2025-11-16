@@ -274,7 +274,7 @@ class Jeu:
                             if self.popup_crochet.selection == 0:  # Oui
                                 # Réutilisation de la méthode utiliser_cle
                                 self.popup_crochet.piece.utiliser_cle(self.popup_crochet.porte)
-                                self.joueur.objets_speciaux.remove("lockpick")
+#                              self.joueur.objets_speciaux.remove("lockpick")
                                 self.inventaire.message = "Crochetage réussi !"
                                 self.inventaire.message_timer = pygame.time.get_ticks()
                             else:
