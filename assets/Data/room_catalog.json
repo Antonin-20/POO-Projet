@@ -161,7 +161,7 @@
       "doors": ["S", "E", "W"],
       "placement": { "border": 0 },
       "loot": [
-        { "id": "metal_detector", "qty": 1, "p": 0.33 }
+        { "id": "metal_detector", "qty": 1, "p": 0.1 }
       ]
     },
 

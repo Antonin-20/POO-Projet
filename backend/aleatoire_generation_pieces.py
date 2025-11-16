@@ -83,7 +83,6 @@ def extrait_pool(catalog,ligne,colonne):
         border = data["placement"]["border"]
         doors = data["doors"]                       #à exploiter pour éviter de tomber sur des couloirs sans issue
 
-
         if border == 0:  # partout
             return True
 
@@ -113,7 +112,6 @@ def extrait_pool(catalog,ligne,colonne):
         pool_filtré = list(set(POOL))
 
     choix = random.sample(list(set(pool_filtré)), 3) #on s'assure que les 3 pièces soient différentes
-    print('pioche filtrée:',choix)
 
     return choix
 
