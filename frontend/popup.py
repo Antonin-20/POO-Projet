@@ -37,6 +37,9 @@ class Popup:
         # Si True → le popup doit être affiché et les inputs Q/D/ESPACE le contrôlent
         self.afficher = False
 
+        # valeur temporaire du bouton redraw
+        self.redraw_button_rect = pygame.Rect(0, 0, 0, 0) 
+
    
 
     # --- Changer la sélection avec Q/D ---
@@ -98,5 +101,24 @@ class Popup:
 
         # Petit texte d'aide
         font_small = pygame.font.SysFont("arial", 18)
-        txt = font_small.render("(Q / D pour choisir • ESPACE pour valider)", True, COUL_TEXTE_FAIBLE)
-        surface.blit(txt, (x + 20, y + h - 30))
+        txt_aide = font_small.render("(Q / D pour choisir • ESPACE pour valider)", True, COUL_TEXTE_FAIBLE)
+        surface.blit(txt_aide, (x + 20, y + h - 30))
+
+        # --- BOUTON REDRAW ---
+        bouton_largeur = 160
+        bouton_hauteur = 40
+        bx = x + w - bouton_largeur - 30   # à droite dans le popup
+        by = y + h - bouton_hauteur - 30   # en bas du popup
+        
+
+        font = pygame.font.SysFont("arial", 28, bold=True)
+        txt_redraw = font.render("Redraw", True, (255, 255, 255))
+        
+        # Stocker le Rect avec la taille du texte
+        self.redraw_button_rect = pygame.Rect(bx, by, bouton_largeur, bouton_hauteur)
+    
+        
+        # Centrer le texte dans le Rect si tu veux
+        txt_rect = txt_redraw.get_rect(center=self.redraw_button_rect.center)
+        pygame.draw.rect(surface, (50, 50, 100), self.redraw_button_rect)  # fond du bouton
+        surface.blit(txt_redraw, txt_rect)

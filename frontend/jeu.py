@@ -205,6 +205,7 @@ class Jeu:
 
     def boucle_principale(self):
         while True:
+                
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -229,7 +230,7 @@ class Jeu:
                 # -----------------------------------------
                 #           FULLSCREEN / RESIZE
                 # -----------------------------------------
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN: #si il y a un appui sur une touche
                     if event.key == pygame.K_ESCAPE and self.plein_ecran:
                         self.plein_ecran = False
                         self.screen = pygame.display.set_mode((900, 720), pygame.RESIZABLE)
@@ -330,6 +331,7 @@ class Jeu:
                         elif event.key == pygame.K_d:
                             self.popup.changer_selection("droite")
 
+
                         elif event.key == pygame.K_SPACE:
                             # quitter la fenêtre de choix
                             self.phase_choix = False
@@ -359,6 +361,22 @@ class Jeu:
 
                             # test de fin
                             self.verification_fin()
+
+                # ----------------- souris -----------------
+                if self.phase_choix and self.popup.afficher and event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1:  # clic gauche
+                        if hasattr(self.popup, "redraw_button_rect"):
+                            if self.popup.redraw_button_rect.collidepoint(event.pos):
+                                print("Clic souris detecté")
+                                if self.joueur.dice > 0:
+                                    self.joueur.dice -= 1
+                                    # juste mettre à jour les pièces
+                                    self.popup.room_choices = extrait_pool()
+                                    print("Nouvelles pièces :", self.popup.room_choices)
+                                    self.popup.room_choice_index = 0
+                                else:
+                                    self.inventaire.message = "Pas assez de dés !"
+                                    self.inventaire.message_timer = pygame.time.get_ticks()
 
                 # -----------------------------------------
                 #         REDIMENSIONNEMENT DE FENÊTRE
