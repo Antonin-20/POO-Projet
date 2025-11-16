@@ -22,7 +22,7 @@ class Manoir:
         self.grille =  [[None for i in range(NB_COLONNES)] for i in range(NB_LIGNES)] #on crée une grille (vide pour le moment) qui va contenir toutes les pièces créées lors de la génération
         #2 pièces sont toujours initialisées : l'entrée et l'antichambre
         self.grille[0][2] = Piece("entrance", (0, 2), "haut")
-        self.grille[NB_LIGNES-1][2] = Piece("antechamber", (NB_LIGNES-1, 2), "haut")
+        self.grille[8][2] = Piece("antechamber", (8, 2), "haut")
 
 
         # --- c'est ici qu'on va charger toutes les pieces du json ---

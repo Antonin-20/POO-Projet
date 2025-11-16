@@ -69,7 +69,7 @@ class Piece :
         """
         portes = self.doors
         niveau = self.position[1] #donne la hauteur de la pièce
-        proba_portes = {    0: 0.0,
+        proba_portes_quadra = {    0: 0.0,
                         1: 0.0103125,    
                         2: 0.04125,      
                         3: 0.09375,      
@@ -79,7 +79,20 @@ class Piece :
                         7: 0.5053125,    
                         8: 0.66         
                                 }                  #dico proba verr selon lvl, quadratique
+        
+        proba_portes_lin = {
+                        0: 0.0,
+                        1: 0.0825,
+                        2: 0.165,
+                        3: 0.2475,
+                        4: 0.33,
+                        5: 0.4125,
+                        6: 0.495,
+                        7: 0.5775,
+                        8: 0.66
+                                }                  #dico proba verr selon lvl, linéaire
         etat_portes = {}
+
         if self.orientation == 0:
             porte_origine = "S"
         elif self.orientation == 90:
@@ -94,7 +107,7 @@ class Piece :
                 etat_portes[p] = 0  #la porte d'ou l'on vient est toujours déverrouillée
             
             else : 
-                if random.random() < proba_portes[niveau]:
+                if random.random() < proba_portes_lin[niveau]:          #lin permet de montrer plus facilement des portes verrouillées
                     etat_portes[p] = 1  #1 = porte verrouillée
                 else:
                     etat_portes[p] = 0  #0 = porte déverrouillée

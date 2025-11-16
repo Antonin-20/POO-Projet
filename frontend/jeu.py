@@ -264,6 +264,12 @@ class Jeu:
                             opposite = {"N":"S", "S":"N", "E":"W", "W":"E"}
                             porte_arrivee = opposite[porte_depart]
 
+                            #On vérifie que la porte est déverrouillée
+                            if piece_depart.locked_doors.get(porte_depart, 0) == 1:
+                                self.inventaire.message = "La porte est verrouillée !"
+                                self.inventaire.message_timer = pygame.time.get_ticks()
+                                continue
+
                             # Vérification cohérence double porte (si une porte rencontre un mur)
                             if porte_depart not in portes_depart or (piece_cible and porte_arrivee not in portes_cible):
                                 self.inventaire.message = "Pas de porte dans cette direction !"
