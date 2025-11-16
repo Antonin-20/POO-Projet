@@ -404,7 +404,7 @@ class Jeu:
                                     # créer l'instance Piece
                                     pos = (self.joueur.ligne, self.joueur.colonne)
                                     direction = self.joueur.orientation
-                                    nouvelle_piece = Piece(room_id, pos, direction)
+                                    nouvelle_piece = Piece(room_id, pos, direction,self.joueur.objets_speciaux)
 
                                     # stocker dans la grille
                                     self.manoir.grille[self.joueur.ligne][self.joueur.colonne] = nouvelle_piece

@@ -3,7 +3,7 @@ import pygame
 import sys
 import os
 from frontend.constantes import *
-from backend.piece import Piece
+
 
 
 class Joueur:
@@ -84,6 +84,7 @@ class Joueur:
         ancienne_pos = (self.ligne, self.colonne)
 
         # Récupération de la pièce actuelle
+        from backend.piece import Piece                 #on le met ici pour éviter les problèmes d'import circulaire
         piece = manoir.grille[self.ligne][self.colonne]
         if piece is None:
             return

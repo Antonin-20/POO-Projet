@@ -2,12 +2,13 @@ from backend.loader import charger_catalogue
 from typing import Tuple
 import random
 
+
 ROOM_CATALOG = charger_catalogue() #on récupère le catalogue des pièces depuis le loader
 
 #print(ROOM_CATALOG["kitchen"]["doors"]) #je me garde un exemple d'accès aux données du catalogue, ne pas suppr tt de suite svp
 
 class Piece :
-    def __init__(self, id_piece: str, position: Tuple[int, int], direction_regard: str):
+    def __init__(self, id_piece: str, position: Tuple[int, int], direction_regard: str,objets_speciaux: list):
         """Classe permettant de créer une instance de pièce lors du dessin.
 
         Args:
@@ -35,7 +36,6 @@ class Piece :
         self.image_path = ROOM_CATALOG[self.id]["image"]
 
         self.doors = ROOM_CATALOG[self.id]["doors"]
-        #print(f"Portes avant orientation de la pièce {self.id} : {self.doors}")
         self.doors = self.calculer_portes_orientees()  #on modifie les portes selon l'orientation
         print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
         self.locked_doors = self.which_locked_door()
@@ -44,9 +44,10 @@ class Piece :
         self.placement = ROOM_CATALOG[self.id]["placement"] 
         self.loot_table = ROOM_CATALOG[self.id]["loot"] 
 
-        #print(f"Table de loot de la pièce {self.id} : {self.loot_table}")
-        self.loot = self.generer_loot() #on génère le loot de la pièce à sa création
-        #print(f"Loot généré pour la pièce {self.id} : {self.loot}")
+        self.objets_speciaux = objets_speciaux   
+
+        self.loot = self.generer_loot(self.objets_speciaux) #on génère le loot de la pièce à sa création
+
     
     def calculer_portes_orientees(self):
             """Renvoie la liste des portes pivotées selon l'orientation de la pièce."""
@@ -126,59 +127,71 @@ class Piece :
         return None                              #indique que la porte était déjà déverrouillée
 
 
-    def generer_loot(self):
-        """permet de générer un loot pour chaque instance de pièce, à partir de la table de loot qui lui est associé dans le .json
+    def generer_loot(self,objets_speciaux):
+        """Génère un loot pour chaque instance de pièce, à partir de la table de loot associée dans le .json.
+        Si le joueur possède "metal_detector", augmente la probabilité d'obtenir clés ou pièces.
+
+        Args:
+            objets_speciaux : liste des objets spéciaux possédés par le joueur en entrant dans la pièce
 
         Returns:
-            _type_: _description_
+            liste d'IDs des objets générés
         """
 
         resultat = []
-        if not self.loot_table:   #pour les 2 pièces de début et toute pièce sans llot
+
+        if not self.loot_table:   #gère les pièces sans loot, comme le hall d'entrée
             return []
-        
+
         table = self.loot_table[0]
 
-        #loot semi-déterministe
-        if table.get("type") == "pool":
+        #loot obligatoire
+        if "type" in table and table["type"] == "pool":
 
             items = table["items"]
             take = table["take"]
 
-            # Construire la liste des candidats
-            candidats = []
+            candidats = [] #on regroupe dans cette liste tous les items pouvant être tirés, sur le principe du pool de pièces dans le manoir
 
             for item in items:
-                qty = item.get("qty", 1)
+                qty = item["qty"]     #quantité de l'item à ajouter au pool (1 par défaut)
 
-                if isinstance(qty, dict):
-                    # quantité min/max aléatoire
-                    n = random.randint(qty.get("min", 1), qty.get("max", 1))
+                if isinstance(qty, dict):                           #cas où la quantité n'est pas fixe
+                    n = random.randint(qty["min"], qty["max"])      #on en prend un nombre aléatoire entre le min et le max (avec + de tmps, le faire de façon prondérée)
                 else:
                     n = qty
 
-                # Ajouter n fois l'ID à la liste des candidats
-                candidats.extend([item["id"]] * n)
+                candidats.extend([item["id"]] * n) #on ajoute n fois notre objet dans la liste des candidats
 
-            # Tirage aléatoire de "take" éléments
-            tirage = random.sample(candidats, min(take, len(candidats)))
+            tirage = random.sample(candidats, min(take, len(candidats)))  #on tire au sort autant d'objets que demandé par 'take'
+
+            if "metal_detector" in objets_speciaux:
+                for i, obj_id in enumerate(tirage):
+                    if obj_id in ["key", "coin"]:
+                        if random.random() < 0.5:  #avec le détecteur de métal, on se donne +50% de chance d'obtenir une clé ou une pièce une fois le tiragd effectué (choix artistique, on aurait pu mettre plus de pièces dans le pool aussi, mais c'est moins sympa)
+                            tirage.append(obj_id)
+
             resultat.extend(tirage)
-
             return resultat
 
-        #loot aléatoire simple
+        #loot aléatoire, pour la majorité des pièces
         else:
             for item in self.loot_table:
-                qty = item.get("qty", 1)
+                qty = item["qty"] if "qty" in item else 1
 
                 if isinstance(qty, dict):
-                    n = random.randint(qty.get("min", 1), qty.get("max", 1))
+                    n = random.randint(qty["min"], qty["max"])
                 else:
                     n = qty
 
-                p = item.get("p", 1)
+                p = item["p"] if "p" in item else 1
+
+                if "metal_detector" in objets_speciaux and item["id"] in ["key", "coin"]:
+                    p = min(1, p * 2)  # double la probabilité d'avoir un objet clé ou pièce (normalement max 1 mais on sécurise, en fct de comment la table de loot a été codée...)
+
                 for _ in range(n):
-                    if random.random() < p:                     #tirage probabiliste
+                    if random.random() < p:
                         resultat.append(item["id"])
 
             return resultat
+
