@@ -8,6 +8,7 @@ from .popup import Popup
 from backend.piece import Piece
 from backend.manoir import Manoir
 from backend.aleatoire_generation_pieces import *
+from frontend.popup_key import PopupKey
 
 
 
@@ -42,6 +43,7 @@ class Jeu:
         self.inventaire = Inventaire(room_catalog) # objet inventaire
         self.manoir = Manoir(room_catalog) # objet manoir
         self.popup = Popup(self.joueur) # objet popup
+        self.popup_cle = PopupKey(self.joueur) 
        
         self.plein_ecran = False
         self.phase_choix = False  # True quand on choisit une salle dans le popup
@@ -282,6 +284,28 @@ class Jeu:
                     continue
 
                 # -----------------------------------------
+                #     GESTION POPUP UTILISATION CLE 
+                # -----------------------------------------
+                if self.popup_cle.afficher:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key in [pygame.K_q, pygame.K_LEFT]:
+                            self.popup_cle.changer_selection_key("gauche")
+                        elif event.key in [pygame.K_d, pygame.K_RIGHT]:
+                            self.popup_cle.changer_selection_key("droite")
+                        elif event.key == pygame.K_SPACE:
+                            # Validation du choix
+                            if self.popup_cle.selection == 0:  # Oui
+                                piece_depart.utiliser_cle(self.popup_cle.porte)
+                                self.joueur.keys -= 1
+                                self.inventaire.message = "Clé utilisée !"
+                                self.inventaire.message_timer = pygame.time.get_ticks()
+                            else:
+                                self.inventaire.message = "Porte verrouillée."
+                                self.inventaire.message_timer = pygame.time.get_ticks()
+                            
+                            self.popup_cle.afficher = False  # fermer le popup
+                    
+                # -----------------------------------------
                 #           FULLSCREEN / RESIZE
                 # -----------------------------------------
                 if event.type == pygame.KEYDOWN: #si il y a un appui sur une touche
@@ -298,7 +322,7 @@ class Jeu:
                     # -----------------------------------------
                     #           PHASE NORMALE (déplacement)
                     # -----------------------------------------
-                    elif not self.phase_choix:
+                    elif not self.phase_choix and not self.popup_cle.afficher:
 
                         # orientation du joueur
                         #sert pour direction_regard par la suite (dans manoir.py))
@@ -347,17 +371,22 @@ class Jeu:
                             opposite = {"N":"S", "S":"N", "E":"W", "W":"E"}
                             porte_arrivee = opposite[porte_depart]
 
+                            peut_creer_piece = True
+
                             # Vérification porte verrouillée
                             if piece_depart.locked_doors.get(porte_depart, 0) == 1:
                                 
                                 if self.joueur.keys > 0:
-                                    #afficher le popup
-                                    piece_depart.utiliser_cle(porte_depart)
-                                    self.joueur.keys -= 1
+                                    self.popup_cle.afficher = True # ca va afficher le popup
+                                    self.popup_cle.selection = 0
+                                    self.popup_cle.piece = piece_depart
+                                    self.popup_cle.porte = porte_depart
+                                    
                                 else:
                                     self.inventaire.message = "La porte est verrouillée !"
                                     self.inventaire.message_timer = pygame.time.get_ticks()
-                                    continue
+                                peut_creer_piece = False
+                                continue
 
                             # Vérification de la présence des deux portes
                             if porte_depart not in portes_depart or (piece_cible and porte_arrivee not in portes_cible):
@@ -370,7 +399,7 @@ class Jeu:
                                 # case déjà occupée → déplacement direct
                                 self.joueur.deplacer(self.manoir, self.inventaire)
                                 self.verification_fin()
-                            else:
+                            elif peut_creer_piece:
                                 # case vide → créer la nouvelle pièce avec pop-up
                                 self.creer_nouvelle_piece(self.manoir.catalog,cible_ligne,cible_colonne)
                                 self.verification_fin()
@@ -511,10 +540,12 @@ class Jeu:
                     
                     )
         
-                # --- Affichage du popup si actif ---
-                if self.popup.afficher:
+                # --- Affichage des popups ---
+                if self.popup_cle.afficher:
+                    self.popup_cle.affichage_popup_key(self.screen, largeur, hauteur, self.joueur)
+                elif self.popup.afficher:
                     self.popup.affichage_popup(self.screen, largeur, hauteur)
-                
+    
                 # fenêtre de fin
                 if self.fin_jeu:
                     self.afficher_message_fin()
