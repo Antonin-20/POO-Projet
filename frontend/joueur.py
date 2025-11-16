@@ -10,7 +10,7 @@ class Joueur:
         self.colonne = colonne
         self.orientation = "haut"
 
-        self.footprint = 70
+        self.footprint = 2
         self.coins = 0
         self.gems = 2
         self.keys = 0

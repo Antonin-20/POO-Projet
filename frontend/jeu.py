@@ -23,7 +23,7 @@ class Jeu:
         self.joueur = Joueur() # objet joueur
         self.inventaire = Inventaire(room_catalog) # objet inventaire
         self.manoir = Manoir(room_catalog) # objet manoir
-        self.popup = Popup() # objet popup
+        self.popup = Popup(self.joueur) # objet popup
 
         self.plein_ecran = False
         self.phase_choix = False  # vrai quand on choisit une salle
@@ -89,7 +89,10 @@ class Jeu:
         """Réinitialise les variables du jeu pour une nouvelle partie.
         pas fonctionnel pour le momment : il faut remettre à zéro le pool, le manoir et retirer un pool, un manoir, etc..."""
         self.joueur = Joueur()
-        self.inventaire = Inventaire()
+        self.inventaire = Inventaire(room_catalog)
+        self.manoir = Manoir(room_catalog)
+        self.popup = Popup(self.joueur)
+        self.menu_actif = True
         self.phase_choix = False
         self.message_fin = ""
         self.fin_jeu = False
@@ -203,7 +206,7 @@ class Jeu:
 
 
 
-    def boucle_principale(self):
+    def boucle_principale(self, room_catalog):
         while True:
                 
             for event in pygame.event.get():
@@ -224,7 +227,7 @@ class Jeu:
                 # -----------------------------------------
                 if self.fin_jeu:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                        self.reinitialiser_jeu()
+                        self.reinitialiser_jeu(room_catalog)
                     continue
 
                 # -----------------------------------------
@@ -271,7 +274,8 @@ class Jeu:
                                 cible_colonne += 1
                             else:
                                 # bord de grille
-                                self.inventaire.message = "Il n'y a pas de porte dans cette direction"
+                                self.inventaire.message = "Pas de porte dans cette direction"
+                                self.inventaire.message_timer = pygame.time.get_ticks()
                                 continue
 
                             # --- 2) VERIFIER SI LA PORTE EXISTE DANS CETTE ORIENTATION ---
@@ -280,21 +284,6 @@ class Jeu:
                                 portes_depart = piece_depart.doors
                             else:
                                 portes_depart = []
-
-                            # Calcul position cible selon orientation
-                            cible_ligne = self.joueur.ligne
-                            cible_colonne = self.joueur.colonne
-                            if self.joueur.orientation == "haut" and self.joueur.ligne < NB_LIGNES - 1:
-                                cible_ligne += 1
-                            elif self.joueur.orientation == "bas" and self.joueur.ligne > 0:
-                                cible_ligne -= 1
-                            elif self.joueur.orientation == "gauche" and self.joueur.colonne > 0:
-                                cible_colonne -= 1
-                            elif self.joueur.orientation == "droite" and self.joueur.colonne < NB_COLONNES - 1:
-                                cible_colonne += 1
-                            else:
-                                self.inventaire.message = "Il n'y a pas de porte dans cette direction"
-                                continue
 
                             # Pièce cible (si elle existe)
                             piece_cible = self.manoir.grille[cible_ligne][cible_colonne]
@@ -305,6 +294,7 @@ class Jeu:
                             opposite = {"N":"S", "S":"N", "E":"W", "W":"E"}
                             porte_arrivee = opposite[porte_depart]
 
+                            # Vérification cohérence double porte (si une porte rencontre un mur)
                             if porte_depart not in portes_depart or (piece_cible and porte_arrivee not in portes_cible):
                                 self.inventaire.message = "Pas de porte dans cette direction !"
                                 self.inventaire.message_timer = pygame.time.get_ticks()
@@ -375,8 +365,8 @@ class Jeu:
                                     print("Nouvelles pièces :", self.popup.room_choices)
                                     self.popup.room_choice_index = 0
                                 else:
-                                    self.inventaire.message = "Pas assez de dés !"
-                                    self.inventaire.message_timer = pygame.time.get_ticks()
+                                    self.popup.message_dé = "Pas assez de dés !"
+                                    self.popup.message_timer = pygame.time.get_ticks()
 
                 # -----------------------------------------
                 #         REDIMENSIONNEMENT DE FENÊTRE

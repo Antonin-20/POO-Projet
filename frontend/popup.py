@@ -2,6 +2,7 @@ import pygame
 import os
 import json
 from .constantes import *
+from frontend.joueur import Joueur
 
 # --- Chargement du JSON pour récupérer toutes les infos des rooms ---
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -13,20 +14,29 @@ rooms = data["rooms"]
 class Popup:
     """Affichage du tirage des 3 pièces après avoir confirmé un déplacement."""
 
-    def __init__(self):
+    def __init__(self, joueur): #ici on met joueur pour recupérer le nombre de dé du joueur qui joue
         """
         room_images : dict {room_id: surface pygame} déjà chargées à la bonne taille
         """
-
+        self.joueur = joueur
         # --- Précharger les images des pièces pour le popup ---
         self.room_images = {}
         taille_popup = 160
+
         for r in rooms:
             chemin = os.path.join("assets", r["image"])
             if os.path.exists(chemin):
                 img = pygame.image.load(chemin).convert_alpha()
                 img = pygame.transform.smoothscale(img, (taille_popup-10, taille_popup-10))
                 self.room_images[r["id"]] = img
+        
+       # On récupère l'image dé pour l'afficher dans le popup
+        BASE_DIR = os.path.dirname(os.path.dirname(__file__))  
+        image_de_path = os.path.join(BASE_DIR, "assets", "Images", "de.png")
+
+        # Charger et redimensionner l'image
+        self.image_de = pygame.transform.smoothscale(
+            pygame.image.load(image_de_path).convert_alpha(), (40, 40))
 
         # Liste des 3 pièces tirées
         self.room_choices = []
@@ -39,6 +49,10 @@ class Popup:
 
         # valeur temporaire du bouton redraw
         self.redraw_button_rect = pygame.Rect(0, 0, 0, 0) 
+
+        self.message_dé = ""
+        self.message_timer = 0     # timestamp pour faire disparaître le message
+        self.message_duration = 1000  # durée en ms (2s)
 
    
 
@@ -104,6 +118,9 @@ class Popup:
         txt_aide = font_small.render("(Q / D pour choisir • ESPACE pour valider)", True, COUL_TEXTE_FAIBLE)
         surface.blit(txt_aide, (x + 20, y + h - 30))
 
+
+        
+
         # --- BOUTON REDRAW ---
         bouton_largeur = 160
         bouton_hauteur = 40
@@ -116,9 +133,47 @@ class Popup:
         
         # Stocker le Rect avec la taille du texte
         self.redraw_button_rect = pygame.Rect(bx, by, bouton_largeur, bouton_hauteur)
+
+        # Vérifier si la souris est dessus
+        souris_pos = pygame.mouse.get_pos()
+        survol = self.redraw_button_rect.collidepoint(souris_pos)
+
+        # Couleur et épaisseur du contour selon survol
+        couleur_bord = (255, 255, 255) if survol else (0, 0, 0)
+        epaisseur_bord = 4 if survol else 2
     
         
-        # Centrer le texte dans le Rect si tu veux
+        # Centrer le texte dans le Rect 
         txt_rect = txt_redraw.get_rect(center=self.redraw_button_rect.center)
         pygame.draw.rect(surface, (50, 50, 100), self.redraw_button_rect)  # fond du bouton
+        pygame.draw.rect(surface, couleur_bord, self.redraw_button_rect, epaisseur_bord)  # bordure
         surface.blit(txt_redraw, txt_rect)
+
+
+
+        # --- AFFICHAGE DÉ ET DE SON COMPTEUR ---
+        # Position du dé à gauche du bouton Redraw
+        de_margin = 10
+        de_x = self.redraw_button_rect.left - self.image_de.get_width() - de_margin
+        de_y = self.redraw_button_rect.top + (self.redraw_button_rect.height - self.image_de.get_height()) // 2
+        surface.blit(self.image_de, (de_x, de_y))
+
+        # Afficher le nombre compteur de dés du joueur
+        font = pygame.font.SysFont("arial", 24, bold=True)
+        texte_de = font.render(str(self.joueur.dice), True, (255, 255, 255))
+        # position à droite de l’image
+        texte_x = de_x + self.image_de.get_width() - 60
+        texte_y = de_y + (self.image_de.get_height() - texte_de.get_height()) // 2
+        surface.blit(texte_de, (texte_x, texte_y))
+
+        # ------ AFFICHAGE MESSAGE SI PLUS DE dÉS ------
+        if self.message_dé:
+        # disparaît après self.message_duration ms
+            if pygame.time.get_ticks() - self.message_timer < self.message_duration:
+                font_msg = pygame.font.SysFont("arial", 20, bold=True)
+                txt_msg = font_msg.render(self.message_dé, True, (255, 50, 50))
+                # Centrer sous le bouton Redraw
+                txt_rect = txt_msg.get_rect(center=(self.redraw_button_rect.centerx, self.redraw_button_rect.top - 20))
+                surface.blit(txt_msg, txt_rect)
+            else:
+                self.message_dé = ""  # effacer après le temps écoulé
