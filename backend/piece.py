@@ -28,17 +28,22 @@ class Piece :
             self.orientation = 270
 
     #on met dans cette instance toutes les infos de la pièce depuis le catalogue
-        self.name = ROOM_CATALOG[self.id]["name"]
+        self.name = ROOM_CATALOG[self.id]["name"] #doublon
         self.color = ROOM_CATALOG[self.id]["color"]
         self.rarity = ROOM_CATALOG[self.id]["rarity"]
         self.gem_cost = ROOM_CATALOG[self.id]["gem_cost"]
         self.image_path = ROOM_CATALOG[self.id]["image"]
+
         self.doors = ROOM_CATALOG[self.id]["doors"]
         #print(f"Portes avant orientation de la pièce {self.id} : {self.doors}")
         self.doors = self.calculer_portes_orientees()  #on modifie les portes selon l'orientation
-        #print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
+        print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
+        self.locked_doors = self.which_locked_door()
+        print(f"État des portes de la pièce {self.id} : {self.locked_doors}")
+
         self.placement = ROOM_CATALOG[self.id]["placement"] 
         self.loot_table = ROOM_CATALOG[self.id]["loot"] 
+
         #print(f"Table de loot de la pièce {self.id} : {self.loot_table}")
         self.loot = self.generer_loot() #on génère le loot de la pièce à sa création
         #print(f"Loot généré pour la pièce {self.id} : {self.loot}")
@@ -62,21 +67,55 @@ class Piece :
         """Fonction à implémenter : prend en entrée la liste des portes de la pièce et la position de la pièce, renvoie une liste de taille identique à celle de la pièce originale*
         pour indiquer l'état de chaque porte. Ex : ["N","S"] ---> [1,0] si la porte Nord est verrouillée et la porte Sud déverrouillée.  
         """
-        self.locked_door = None
+        portes = self.doors
+        niveau = self.position[1] #donne la hauteur de la pièce
+        proba_portes = {    0: 0.0,
+                        1: 0.0103125,    
+                        2: 0.04125,      
+                        3: 0.09375,      
+                        4: 0.165,        
+                        5: 0.2578125,   
+                        6: 0.37125,     
+                        7: 0.5053125,    
+                        8: 0.66         
+                                }                  #dico proba verr selon lvl, quadratique
+        etat_portes = []
+        if self.orientation == 0:
+            porte_origine = "S"
+        elif self.orientation == 90:
+            porte_origine = "E"
+        elif self.orientation == 180:
+            porte_origine = "N"
+        elif self.orientation == 270:
+            porte_origine = "W"
+
+        for p in portes:
+            if p == porte_origine:
+                etat_portes.append(0)  #la porte d'ou l'on vient est toujours déverrouillée
+            
+            else : 
+                if random.random() < proba_portes[niveau]:
+                    etat_portes.append(1)  #1 = porte verrouillée
+                else:
+                    etat_portes.append(0)  #0 = porte déverrouillée
+
+        return etat_portes
 
 
     def generer_loot(self):
+        """permet de générer un loot pour chaque instance de pièce, à partir de la table de loot qui lui est associé dans le .json
+
+        Returns:
+            _type_: _description_
+        """
 
         resultat = []
         if not self.loot_table:   #pour les 2 pièces de début et toute pièce sans llot
             return []
         
         table = self.loot_table[0]
-        print("table:",table)
 
-        # -----------------------------
-        # CAS 1 : LOOT DE TYPE "POOL"
-        # -----------------------------
+        #loot semi-déterministe
         if table.get("type") == "pool":
 
             items = table["items"]
@@ -103,9 +142,7 @@ class Piece :
 
             return resultat
 
-        # --------------------------------------
-        # CAS 2 : LOOT PROBABILISTE SIMPLE
-        # --------------------------------------
+        #loot aléatoire simple
         else:
             for item in self.loot_table:
                 qty = item.get("qty", 1)
@@ -115,10 +152,9 @@ class Piece :
                 else:
                     n = qty
 
-                # On fait "n" tirages indépendants avec probabilité p
                 p = item.get("p", 1)
                 for _ in range(n):
-                    if random.random() < p:
+                    if random.random() < p:                     #tirage probabiliste
                         resultat.append(item["id"])
 
             return resultat
