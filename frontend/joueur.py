@@ -1,7 +1,9 @@
+from backend import piece
 import pygame
 import sys
 import os
 from frontend.constantes import *
+from backend.piece import Piece
 
 
 class Joueur:
@@ -15,6 +17,8 @@ class Joueur:
         self.gems = 2
         self.keys = 0
         self.dice = 10
+        self.piece = Piece("entrance", (ligne, colonne), self.orientation) # a changer les paramètres
+
 
 
     def orienter(self, direction):
@@ -28,9 +32,7 @@ class Joueur:
     "droite": "E"
     }
 
-    def recuperer_loot(self,piece):
-        """Méthode qui permet de récupérer le loot d'une pièce donnée en argument."""
-        pass
+    
 
     def deplacer(self, manoir, inventaire):
         ancienne_pos = (self.ligne, self.colonne)
