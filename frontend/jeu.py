@@ -31,7 +31,7 @@ class Jeu:
         self.message_fin = ""
         self.fin_jeu = False
         self.victoire = False
-
+        #self.room_catalog = room_catalog #on donne cet attribur à la classe simplement pour pouvoir le passer dans creer_nouvelle_pièce
         self.menu_actif = True
 
         initialiser_pool() #création de la pioche initiale au chargement du jeu
@@ -86,7 +86,8 @@ class Jeu:
             self.message_fin = "perdu, t'as plus de pas"
 
     def reinitialiser_jeu(self):
-        """Réinitialise les variables du jeu pour une nouvelle partie."""
+        """Réinitialise les variables du jeu pour une nouvelle partie.
+        pas fonctionnel pour le momment : il faut remettre à zéro le pool, le manoir et retirer un pool, un manoir, etc..."""
         self.joueur = Joueur()
         self.inventaire = Inventaire()
         self.phase_choix = False
@@ -160,9 +161,9 @@ class Jeu:
             pygame.draw.rect(self.screen, couleur, rect, 3, border_radius=8)
             pygame.draw.rect(self.screen, (255,255,255), rect, 2)
 
-    def creer_nouvelle_piece(self):
+    def creer_nouvelle_piece(self,room_catalog,cible_ligne,cible_colonne):
         # Tirer 3 pièces depuis le pool
-        choix = extrait_pool()
+        choix = extrait_pool(room_catalog,cible_ligne,cible_colonne)
 
 
         self.popup.room_choices = choix # stocke les 3 pièces
@@ -298,7 +299,7 @@ class Jeu:
                             piece_cible = self.manoir.grille[cible_ligne][cible_colonne]
                             portes_cible = piece_cible.doors if piece_cible else []
 
-                            # Vérification cohérence double porte
+                            #On vérifie que 2 portes sont adjascentes avant de passer de l'une à l'autre 
                             porte_depart = self.joueur.ORIENTATION_TO_DOOR[self.joueur.orientation]
                             opposite = {"N":"S", "S":"N", "E":"W", "W":"E"}
                             porte_arrivee = opposite[porte_depart]
@@ -315,7 +316,7 @@ class Jeu:
                                 self.verification_fin()
                             else:
                                 # case vide → créer la nouvelle pièce avec pop-up
-                                self.creer_nouvelle_piece()
+                                self.creer_nouvelle_piece(self.manoir.catalog,cible_ligne,cible_colonne)
                                 self.verification_fin()
 
 
@@ -344,7 +345,7 @@ class Jeu:
                             # --- PLACER LA PIÈCE DANS LA GRILLE COMME INSTANCE ---
                             room_id = self.popup.room_choices[self.popup.room_choice_index]
                             if room_id is not None:
-                                # vérifier qu'on n'écrase pas entrée/antichambre
+                                #vérifier qu'on n'écrase pas entrée/antichambre
                                 if self.manoir.grille[self.joueur.ligne][self.joueur.colonne] is None:
                                     # créer l'instance Piece
                                     pos = (self.joueur.ligne, self.joueur.colonne)

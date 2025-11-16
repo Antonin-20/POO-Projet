@@ -32,7 +32,7 @@ class Manoir:
         }
 
         # ----------------------------
-        # Charge les rooms du JSON
+        # Charge les rooms du JSON                            #Cette partie doit être rendue obsolète par le loader, il faudra la corriger
         # ----------------------------
         BASE_DIR = os.path.dirname(os.path.dirname(__file__))  # dossier Projet/
         json_path = os.path.join(BASE_DIR, "assets", "Data", "room_catalog.json")
@@ -68,6 +68,8 @@ class Manoir:
             self.images[room_id] = img
         
         self.room_doors = {r['id']: r['doors'] for r in rooms}
+        self.catalog = room_catalog
+
         
         # orientation des rooms (même taille que la grille)
         self.room_orientations = [[None for i in range(NB_COLONNES)] for j in range(NB_LIGNES)]

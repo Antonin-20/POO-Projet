@@ -66,15 +66,51 @@ def initialiser_pool():
     POOL = pool()  
     print('pioche initiale :',POOL)
 
-def extrait_pool():
+
+
+
+
+def extrait_pool(catalog,ligne,colonne):
     """sert à obtenir les 3 pièces aléatires du pool lors du choix du joueur. Contient toutes les contraites possibles 
     (pour l'instant, juste que les pièces soient différentes entre elles).
     """
+    def piece_est_valide(piece_id):
+        """permet de créer un sous-pool ne contenant que les pièces valides pour l'emplacement choisi
+
+        Args:
+            piece_id (int): nom de la pièce à tester dans le catalogue
+
+        Returns:
+            bool: booléen indiquant si la pièce peut être placée ou non à cet emplacement
+        """
+        data = catalog[piece_id]
+        border = data["placement"]["border"]
+
+        if border == 0:  # partout
+            return True
+
+        if border == 1:  # aile EST
+            return colonne == 0
+
+        if border == 2:  # aile OUEST
+            return colonne == 4
+
+        if border == 3:  # EST ou OUEST
+            return colonne in (0, 4)
+
+        if border == 4:  # aucune case permise
+            return False
+
+        return True
+    
     global POOL
+
     choix = random.sample(list(set(POOL)), 3) #on s'assure que les 3 pièces soient différentes
 
 
     return choix
+
+
 
 def retirer_piece_du_pool(piece_id):
     """Retirer la pièce choisie du pool."""
