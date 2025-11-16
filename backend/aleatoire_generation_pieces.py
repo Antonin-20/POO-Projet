@@ -66,10 +66,16 @@ def initialiser_pool():
 
 
 def extrait_pool(catalog,ligne,colonne):
-    """sert à obtenir les 3 pièces aléatires du pool lors du choix du joueur. Contient toutes les contraites possibles 
-    (pour l'instant, uniquement le fait que les pieces soient uniques).
+    """permet de créer un choix de 3 pièces possédant toutes les caractéristiques suivantes
+         |--->unicité des pièces lors du tirage
+         |--->respect des positions possibles vis à vis des ailes Ouest et Est
+    Args:
+        catalog (dict): dictionnaire contenant l'intégralité des pièces
+        ligne (int): ligne de la pièce que l'on va créer
+        colonne (int): colonne de la pièce que l'on va créer
     """
-    def piece_est_valide(piece_id):
+
+    def placement_colonne(piece_id,colonne):
         """permet de créer un sous-pool ne contenant que les pièces valides pour l'emplacement choisi
 
         Args:
@@ -82,33 +88,30 @@ def extrait_pool(catalog,ligne,colonne):
         border = data["placement"]["border"]
         doors = data["doors"]                       #à exploiter pour éviter de tomber sur des couloirs sans issue
 
-        if border == 0:  # partout
+        if border == 0 :  # partout
             return True
 
-        if border == 1:  # aile EST
-            return colonne == 0
+        if border == 1 and colonne == 4:  # aile EST
+            return True
 
-        if border == 2:  # aile OUEST
-            return colonne == 4
+        if border == 2 and colonne == 0:  # aile OUEST
+            return True
 
-        if border == 3:  # EST ou OUEST
-            return colonne in (0,4)
+        if border == 3 and colonne in (0,4):  # EST ou OUEST
+            return True
 
-        if border == 4:  # pas dans une aile
-            return colonne not in (0,4)
+        if border == 4 and colonne not in (0,4):  # pas dans une aile
+            return True
         
-
-        return True
+        else :
+            return False
     
     global POOL
+    pool_filtré = [p for p in POOL if placement_colonne(p, colonne)]  #on ne garde que les pièces valides pour cette position
 
-    pool_filtré = [p for p in POOL if piece_est_valide(p)]  #on ne garde que les pièces valides pour cette position
-
-    #s'il reste moins de 3 pièces valides dans le pool, message d'erreur
     if len(pool_filtré) < 3:
-        print("Il n'y a plus assez de pièces valides pour cet emplacement")
-        #faire quand même un pool, mais sans contraintes, afin de continuer a placer des pieces
-        pool_filtré = list(set(POOL))
+        print("Il n'y a plus assez de pièces valides pour cet emplacement")     #s'il reste moins de 3 pièces valides dans le pool, message d'erreur
+        pool_filtré = list(set(POOL))         #faire quand même un pool, mais sans contraintes, afin de continuer a placer des pieces
 
     choix = random.sample(list(set(pool_filtré)), 3) #on s'assure que les 3 pièces soient différentes
 
