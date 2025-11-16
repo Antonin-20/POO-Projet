@@ -14,9 +14,38 @@ with open(json_path, encoding="utf-8") as f:
     data = json.load(f)
 rooms = data["rooms"]
 
-
 class Inventaire:
+
+    """
+    Dessine l'inventaire (icônes + compteurs + pièce actuelle) sur la surface de jeu.
+    fonctionalités : 
+      - charger et mettre à l'échelle les icônes de ressources du joueur
+      - affichager et mettre a jour les comptueurs de l'inventaire (cles, gemmes etc...)
+      - précharger les images des pièces à la bonne taille pour l'affichage « Pièce actuelle »,
+      - mémoriser et d'afficher un message de warning (a court de portes dans cette direction)
+    """
+
     def __init__(self, room_catalog):
+
+        """
+            Initialise l'inventaire et précharge les ressources graphiques.
+
+            Parametres:
+            room_catalog : iterable
+                Catalogue des pièces du manoir (par exemple la liste globale
+                `rooms`). Chaque élément doit au minimum contenir :
+                - une clé ``"id"`` : identifiant unique de la pièce,
+                - une clé ``"image"`` : chemin relatif vers le fichier image
+                    de la pièce (depuis ``assets/``).
+
+            Bonus:
+            - Les icônes de ressources du joueur (empreintes, pièces, gemmes,
+            clés, dé) sont chargées depuis ``assets/Images/icone_inv/`` et
+            redimensionnées à ``TAILLE_ICONE``.
+            - Les images de pièces sont redimensionnées une seule fois à
+            ``self.taille_case_piece`` pour optimiser l'affichage.
+        """
+
         # --- Icônes joueur ---
         self.images = []
         noms = ["footprint.png", "coins.png", "diamond.png", "key.png", "de.png"]
@@ -46,17 +75,11 @@ class Inventaire:
 
 
     # --- Affichage de l'inventaire ---
-    """
-    
-    Cette méthode affiche le compteur des objets, la case actuelle du joueur et un message si le joueur
-    rencontre un mur
-                                     
-    """
+
     def affichage(self, surface, joueur, largeur_fenetre, hauteur_fenetre, font, manoir):
         """
     
-        Cette méthode affiche le compteur des objets, la case actuelle du joueur et un message si le joueur
-        rencontre un mur
+        Cette méthode affiche le compteur des objets, la case actuelle du joueur et un message si le joueur est a court de portes 
                                             
         """
         x_inv = LARGEUR_GRILLE_FIXE
@@ -94,7 +117,7 @@ class Inventaire:
                 # Affiche l'image directement dans le carré
                 surface.blit(img, joueur_rect.topleft)
 
-        #Affichage du message quand pas de portes 
+        #Affichage du message quand pas de portes dispo
         if self.message and pygame.time.get_ticks() - self.message_timer < self.message_duration:
             elapsed = pygame.time.get_ticks() - self.message_timer
             if elapsed < 3000:  # moins de 3 secondes
@@ -104,7 +127,7 @@ class Inventaire:
             else:
                 self.message = ""  # effacer après 3 secondes
 
-        # Compteurs
+        # Compteurs : contenu + display  
         compteur_texte = font.render(str(joueur.footprint), True, COUL_TEXTE)
         x_compteur = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_texte.get_width() - 10
         y_compteur = 68
@@ -126,7 +149,7 @@ class Inventaire:
         y_dice = 68 + 4*TAILLE_ICONE + 80
         surface.blit(compteur_dice, (x_compteur, y_dice))
 
-        # Icônes en haut à droite
+        # Icônes associés aux compteurs en haut à droite
         marge_x, marge_y, espace = 20, 60, 20
         for i, img in enumerate(self.images):
             x = x_inv + largeur_inv - TAILLE_ICONE - marge_x
