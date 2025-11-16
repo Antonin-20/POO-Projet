@@ -41,6 +41,12 @@ class PopupCrochet:
         titre = font.render("Voulez-vous crocheter la porte ?", True, COUL_TEXTE)
         surface.blit(titre, (x + 20, y + 20))
 
+        # Texte qui dit le cout 
+        font_cout = pygame.font.SysFont("arial", 20)
+        texte_cout = font_cout.render("Coût : x1 lockpick", True, COUL_TEXTE_FAIBLE)
+        surface.blit(texte_cout, (x + 20, y + 60))
+
+
         # Options Oui / Non
         font_opt = pygame.font.SysFont("arial", 28, bold=True)
         oui_couleur = (255, 0, 0) if self.selection == 0 else COUL_TEXTE
