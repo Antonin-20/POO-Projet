@@ -17,7 +17,7 @@ class Piece :
             direction_regard (str): position du regard du joueur lors du choix de la pièce ('haut','bas','gauche','droite') pour en déduire l'orientation de cette dernière, en degrés.
         """
         self.id = id_piece
-        self.position = position  # (x, y) coordonnées dans la grille du manoir
+        self.position = position  # (y, x) coordonnées dans la grille du manoir
 
         if direction_regard == 'haut':
             self.orientation = 0
@@ -67,7 +67,7 @@ class Piece :
         pour indiquer l'état de chaque porte. Ex : ["N","S"] ---> [1,0] si la porte Nord est verrouillée et la porte Sud déverrouillée.  
         """
         portes = self.doors
-        niveau = self.position[1] #donne la hauteur de la pièce
+        niveau = self.position[0] #donne la hauteur de la pièce
         proba_portes_quadra = {    0: 0.0,
                         1: 0.0103125,    
                         2: 0.04125,      
