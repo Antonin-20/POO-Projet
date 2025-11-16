@@ -4,7 +4,7 @@ import json
 from .constantes import *
 from frontend.joueur import Joueur
 
-# --- Chargement du JSON pour récupérer toutes les infos des rooms ---
+# Chargement du JSON pour récupérer toutes les infos des rooms 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 json_path = os.path.join(BASE_DIR, "assets", "Data", "room_catalog.json")
 with open(json_path, encoding="utf-8") as f:
@@ -12,14 +12,28 @@ with open(json_path, encoding="utf-8") as f:
 rooms = data["rooms"]
 
 class Popup:
-    """Affichage du tirage des 3 pièces après avoir confirmé un déplacement."""
+    """
+    Gère la fenêtre de tirage et de sélection des pièces après un déplacement.
 
-    def __init__(self, joueur): #ici on met joueur pour recupérer le nombre de dé du joueur qui joue
+    Cette classe :
+      - précharge les images des pièces à la bonne taille pour l'affichage du tirage,
+      - affiche un popup avec jusqu'à trois choix de salles,
+      - permet de changer la sélection via Q/D et de la valider via ESPACE,
+      - gère le bouton « Redraw » lié au nombre de dés du joueur,
+      - affiche un message d'erreur temporaire si le joueur n'a plus de dés.
+    """
+
+    def __init__(self, joueur):
         """
+        Initialise le popup et précharge les ressources graphiques.
+
+        Instance du joueur utilisée notamment pour connaître le nombre
+        de dés disponibles pour le bouton « Redraw ».
+
         room_images : dict {room_id: surface pygame} déjà chargées à la bonne taille
         """
         self.joueur = joueur
-        # --- Précharger les images des pièces pour le popup ---
+        # Précharger les images des pièces pour le popup 
         self.room_images = {}
         taille_popup = 160
 
@@ -54,11 +68,13 @@ class Popup:
         self.message_timer = 0     # timestamp pour faire disparaître le message
         self.message_duration = 1000  # durée en ms (2s)
 
-   
-
-    # --- Changer la sélection avec Q/D ---
     def changer_selection(self, direction: str):
-        """direction = 'gauche' ou 'droite'"""
+                """
+        Change la sélection courante parmi les pièces tirées avec Q/D.
+
+        direction : str
+            Sens de la navigation : "gauche" ou "droite".
+        """
         if not self.room_choices:
             return
 
@@ -67,9 +83,18 @@ class Popup:
         elif direction == "droite":
             self.room_choice_index = (self.room_choice_index + 1) % len(self.room_choices)
 
-    # --- Dessiner la fenêtre de choix ---
+
     def affichage_popup(self, surface, largeur_fenetre, hauteur_fenetre):
-        """Affiche le popup si self.afficher est True."""
+        """
+        Affiche la fenêtre de choix des pièces si `self.afficher` est True.
+
+        Le popup :
+          - assombrit l'arrière-plan,
+          - affiche les 3 pièces tirées avec surbrillance sur la sélection,
+          - affiche le bouton « Redraw » avec survol à la souris,
+          - affiche l'icône du dé et le compteur de dés du joueur,
+          - affiche un message d'erreur temporaire si le joueur n'a plus de dés.
+        """
         if not self.afficher:
             return  # on ne dessine rien
         else :
