@@ -176,55 +176,6 @@ class Jeu:
         self.screen.blit(texte1, rect1)
         self.screen.blit(texte2, rect2)
 
-    def afficher_fenetre_choix(self):
-        """
-        Affiche une petite fenêtre centrale de choix de salle.
-
-        Affiche :
-          - une fenêtre modale centrée,
-          - un titre "Choisis une salle",
-          - trois cases correspondant aux choix possibles, avec mise en
-            évidence de la sélection via `self.inventaire.room_choice_index`.
-        """
-        largeur, hauteur = self.screen.get_size()
-        
-        # Taille de la fenêtre
-        fenetre_largeur = 400
-        fenetre_hauteur = 150
-        x_fen = (largeur - fenetre_largeur) // 2
-        y_fen = (hauteur - fenetre_hauteur) // 2
-
-        # Fond semi-transparent derrière la fenêtre
-        overlay = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 120))
-        self.screen.blit(overlay, (0, 0))
-
-        # Fenêtre principale
-        fenetre_rect = pygame.Rect(x_fen, y_fen, fenetre_largeur, fenetre_hauteur)
-        pygame.draw.rect(self.screen, COUL_MENU, fenetre_rect, border_radius=10)
-        pygame.draw.rect(self.screen, COUL_TEXTE, fenetre_rect, 3, border_radius=10)
-
-        # Titre
-        font_titre = pygame.font.SysFont("arial", 26, bold=True)
-        titre = font_titre.render("Choisis une salle", True, COUL_TEXTE)
-        self.screen.blit(titre, (x_fen + 20, y_fen + 10))
-
-        # Les 3 cases
-        taille_case = 80
-        espace = 25
-        base_x = x_fen + 30
-        base_y = y_fen + 50
-
-        for i in range(3):
-            rect = pygame.Rect(base_x + i*(taille_case + espace), base_y, taille_case, taille_case)
-            # couleur selon sélection
-            if i == self.inventaire.room_choice_index:
-                couleur = COUL_SELECTION
-            else:
-                couleur = COUL_CHOIX
-            pygame.draw.rect(self.screen, couleur, rect, 3, border_radius=8)
-            pygame.draw.rect(self.screen, (255,255,255), rect, 2)
-
     def creer_nouvelle_piece(self,room_catalog,cible_ligne,cible_colonne):
         """
         Tire de nouvelles pièces pour une case cible et active le popup.
@@ -304,6 +255,7 @@ class Jeu:
                                 self.inventaire.message_timer = pygame.time.get_ticks()
                             
                             self.popup_cle.afficher = False  # fermer le popup
+                    continue
                     
                 # -----------------------------------------
                 #           FULLSCREEN / RESIZE
@@ -420,10 +372,7 @@ class Jeu:
                             # quitter la fenêtre de choix
                             self.phase_choix = False
                             self.popup.afficher = False
-
-                            # mémoriser l’ancienne position (si besoin)
-                            ancienne_ligne = self.joueur.ligne
-                            ancienne_colonne = self.joueur.colonne
+                          
 
                             # déplacement réel du joueur
                             self.joueur.deplacer(self.manoir, self.inventaire)
