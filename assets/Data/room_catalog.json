@@ -155,7 +155,7 @@
       "id": "courtyard",
       "name": "Courtyard",
       "color": "GREEN",
-      "rarity": 1,
+      "rarity": 2,
       "gem_cost": 1,
       "image": "Images/rooms/Courtyard.png",
       "doors": ["S", "E", "W"],
