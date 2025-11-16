@@ -9,6 +9,7 @@ from backend.piece import Piece
 from backend.manoir import Manoir
 from backend.aleatoire_generation_pieces import *
 from frontend.popup_key import PopupKey
+from .popup_crochet import PopupCrochet
 
 
 
@@ -44,6 +45,7 @@ class Jeu:
         self.manoir = Manoir(room_catalog) # objet manoir
         self.popup = Popup(self.joueur) # objet popup
         self.popup_cle = PopupKey(self.joueur) 
+        self.popup_crochet = PopupCrochet(self.joueur)
        
         self.plein_ecran = False
         self.phase_choix = False  # True quand on choisit une salle dans le popup
@@ -256,6 +258,31 @@ class Jeu:
                             
                             self.popup_cle.afficher = False  # fermer le popup
                     continue
+
+                # -----------------------------------------
+                #     GESTION POPUP UTILISATION CROCHETAGE
+                # -----------------------------------------
+
+                if self.popup_crochet.afficher:
+                    if event.type == pygame.KEYDOWN:
+                        if event.key in [pygame.K_q, pygame.K_LEFT]:
+                            self.popup_crochet.changer_selection_crochet("gauche")
+                        elif event.key in [pygame.K_d, pygame.K_RIGHT]:
+                            self.popup_crochet.changer_selection_crochet("droite")
+                        elif event.key == pygame.K_SPACE:
+                            # Validation du choix
+                            if self.popup_crochet.selection == 0:  # Oui
+                                # Réutilisation de la méthode utiliser_cle
+                                self.popup_crochet.piece.utiliser_cle(self.popup_crochet.porte)
+                                self.joueur.objets_speciaux.remove("lockpick")
+                                self.inventaire.message = "Crochetage réussi !"
+                                self.inventaire.message_timer = pygame.time.get_ticks()
+                            else:
+                                self.inventaire.message = "Crochetage annulé."
+                                self.inventaire.message_timer = pygame.time.get_ticks()
+
+                            self.popup_crochet.afficher = False
+                    continue
                     
                 # -----------------------------------------
                 #           FULLSCREEN / RESIZE
@@ -333,6 +360,12 @@ class Jeu:
                                     self.popup_cle.selection = 0
                                     self.popup_cle.piece = piece_depart
                                     self.popup_cle.porte = porte_depart
+                                
+                                elif "lockpick" in self.joueur.objets_speciaux:
+                                    self.popup_crochet.afficher = True  # afficher le popup
+                                    self.popup_crochet.selection = 0
+                                    self.popup_crochet.piece = piece_depart  # stocker la pièce
+                                    self.popup_crochet.porte = porte_depart  # stocker la porte ciblée
                                     
                                 else:
                                     self.inventaire.message = "La porte est verrouillée !"
@@ -492,6 +525,8 @@ class Jeu:
                 # --- Affichage des popups ---
                 if self.popup_cle.afficher:
                     self.popup_cle.affichage_popup_key(self.screen, largeur, hauteur, self.joueur)
+                elif self.popup_crochet.afficher:  
+                     self.popup_crochet.affichage_popup_crochet(self.screen, largeur, hauteur) 
                 elif self.popup.afficher:
                     self.popup.affichage_popup(self.screen, largeur, hauteur)
     
