@@ -118,6 +118,9 @@ class Popup:
         txt_aide = font_small.render("(Q / D pour choisir • ESPACE pour valider)", True, COUL_TEXTE_FAIBLE)
         surface.blit(txt_aide, (x + 20, y + h - 30))
 
+
+        
+
         # --- BOUTON REDRAW ---
         bouton_largeur = 160
         bouton_hauteur = 40
@@ -130,22 +133,32 @@ class Popup:
         
         # Stocker le Rect avec la taille du texte
         self.redraw_button_rect = pygame.Rect(bx, by, bouton_largeur, bouton_hauteur)
+
+        # Vérifier si la souris est dessus
+        souris_pos = pygame.mouse.get_pos()
+        survol = self.redraw_button_rect.collidepoint(souris_pos)
+
+        # Couleur et épaisseur du contour selon survol
+        couleur_bord = (255, 255, 255) if survol else (0, 0, 0)
+        epaisseur_bord = 4 if survol else 2
     
         
         # Centrer le texte dans le Rect 
         txt_rect = txt_redraw.get_rect(center=self.redraw_button_rect.center)
         pygame.draw.rect(surface, (50, 50, 100), self.redraw_button_rect)  # fond du bouton
+        pygame.draw.rect(surface, couleur_bord, self.redraw_button_rect, epaisseur_bord)  # bordure
         surface.blit(txt_redraw, txt_rect)
 
+
+
+        # --- AFFICHAGE DÉ ET DE SON COMPTEUR ---
         # Position du dé à gauche du bouton Redraw
         de_margin = 10
         de_x = self.redraw_button_rect.left - self.image_de.get_width() - de_margin
         de_y = self.redraw_button_rect.top + (self.redraw_button_rect.height - self.image_de.get_height()) // 2
-
-        # Afficher l’image
         surface.blit(self.image_de, (de_x, de_y))
 
-        # Afficher le nombre de dés du joueur à côté
+        # Afficher le nombre compteur de dés du joueur
         font = pygame.font.SysFont("arial", 24, bold=True)
         texte_de = font.render(str(self.joueur.dice), True, (255, 255, 255))
         # position à droite de l’image
@@ -153,6 +166,7 @@ class Popup:
         texte_y = de_y + (self.image_de.get_height() - texte_de.get_height()) // 2
         surface.blit(texte_de, (texte_x, texte_y))
 
+        # ------ AFFICHAGE MESSAGE SI PLUS DE dÉS ------
         if self.message_dé:
         # disparaît après self.message_duration ms
             if pygame.time.get_ticks() - self.message_timer < self.message_duration:
