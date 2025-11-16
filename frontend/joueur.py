@@ -44,7 +44,7 @@ class Joueur:
         self.keys = 0
         self.dice = 10
 
-        self.objets_speciaux = ["lockpick"]
+        self.objets_speciaux = ["lockpick","lockpick","lockpick"]
 
 
     def orienter(self, direction):
