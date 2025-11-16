@@ -14,7 +14,7 @@ class Joueur:
         self.coins = 0
         self.gems = 2
         self.keys = 0
-        self.dice = 0
+        self.dice = 10
 
 
         
