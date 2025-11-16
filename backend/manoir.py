@@ -8,7 +8,19 @@ import json
 
 
 class Manoir:
+    class Manoir:
+        """
+        Représente le manoir et sa grille de pièces.
+
+        Cette classe gère :
+        - la grille logique des pièces (entrance, antechamber, pièces générées),
+        - le chargement et la mise à léchelle des images associées à chaque pièce,
+        - le stockage des orientations de pièces,
+        - et laffichage de la grille ainsi que du joueur sur la surface de jeu.
+        """
+
     def __init__(self, room_catalog):
+        # Antichambre et Entrance uniquement 
         self.entrance_img = pygame.transform.smoothscale(
             pygame.image.load(('assets/Images/rooms/Entrance_Hall.png')).convert_alpha(),
             (LARGEUR_CASE - 4*MARGE, HAUTEUR_CASE - 4*MARGE)
@@ -19,13 +31,13 @@ class Manoir:
         )
 
 
-        self.grille =  [[None for i in range(NB_COLONNES)] for i in range(NB_LIGNES)] #on crée une grille (vide pour le moment) qui va contenir toutes les pièces créées lors de la génération
-        #2 pièces sont toujours initialisées : l'entrée et l'antichambre
+        # on crée une grille initialisee avec antichamber + entrance qui va ensuite contenir toutes les pièces créées lors de la génération
+        self.grille =  [[None for i in range(NB_COLONNES)] for i in range(NB_LIGNES)] 
         self.grille[0][2] = Piece("entrance", (0, 2), "haut")
         self.grille[NB_LIGNES-1][2] = Piece("antechamber", (NB_LIGNES-1, 2), "haut")
 
 
-        # --- c'est ici qu'on va charger toutes les pieces du json ---
+        # Dictionnaire avec les images des pieces 
         self.images = {
             "entrance": self.entrance_img,
             "antechamber": self.antechamber_img
@@ -45,6 +57,7 @@ class Manoir:
             print("fichier JSON introuvable :", json_path)
             rooms = []
 
+        # Chargement et mise à l’échelle des images des autres pièces
         for r in rooms:
             room_id = r.get("id")
             image_rel = r.get("image")
@@ -52,6 +65,7 @@ class Manoir:
             if not room_id or not image_rel:
                 continue
 
+            # On ignore l'entrée et l'antichambre déjà gérées manuellement
             if room_id in ["entrance", "antechamber"]:
                 continue
 
@@ -67,28 +81,31 @@ class Manoir:
             )
             self.images[room_id] = img
         
+        # mapping id de pièce -> configuration de portes
         self.room_doors = {r['id']: r['doors'] for r in rooms}
         self.catalog = room_catalog
 
-        
         # orientation des rooms (même taille que la grille)
         self.room_orientations = [[None for i in range(NB_COLONNES)] for j in range(NB_LIGNES)]
     
 
     def ajout_piece(self, surface, joueur, x_offset=0, y_offset=0):
+        """
+        Affiche la grille du manoir et le joueur sur la surface donnée.
 
+        La grille est dessinée du bas vers le haut (ligne 0 en bas, ligne
+        NB_LIGNES-1 en haut), avec les pièces orientées selon leur attribut
+        `orientation`, puis le contour du joueur et son orientation sont tracés.
+        """
         largeur_fenetre, hauteur_fenetre = surface.get_size()
-
-        # On veut montrer la grille DU BAS VERS LE HAUT :
-        # ligne 0 = bas, ligne 8 = haut.
-        #
+        # ligne 0 = bas, ligne NB_LIGNES-1 = haut = 8
         # On calcule un y_offset pour que tout soit visible et centré :
         y_offset = (hauteur_fenetre - NB_LIGNES * HAUTEUR_CASE) // 2
 
         for i in range(NB_LIGNES):
             for j in range(NB_COLONNES):
 
-                # Coordonnées écran
+                # Coordonnées écran (conversion grille -> écran)
                 y = (NB_LIGNES - 1 - i) * HAUTEUR_CASE + y_offset + MARGE
                 x = j * LARGEUR_CASE + x_offset + MARGE
 
@@ -98,17 +115,16 @@ class Manoir:
                 # Fond de la case
                 pygame.draw.rect(surface, COUL_CASE, rect)
 
-                # --- Récupération de la pièce associée ---
+                # Récupération de la pièce associée
                 piece = self.grille[i][j]
                 if piece is not None:
                     img = self.images.get(piece.id)  # récupère l'image via l'id
                     if piece.orientation != 0:
-                        img = pygame.transform.rotate(img, piece.orientation)  # appliquer orientation (sens horaire pour pygame !!!)
+                        # Appliquer l’orientation (sens horaire pour pygame)
+                        img = pygame.transform.rotate(img, piece.orientation) 
                     surface.blit(img, (x + MARGE, y + MARGE))
 
-        # -------------------------------------------------------
         # Dessin du joueur
-        # -------------------------------------------------------
         joueur_x = x_offset + joueur.colonne * LARGEUR_CASE + MARGE
         joueur_y = y_offset + (NB_LIGNES - 1 - joueur.ligne) * HAUTEUR_CASE + MARGE
 
@@ -120,8 +136,7 @@ class Manoir:
 
         pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 3)
 
-        # Indication orientation
-        # Orientation
+        # Indication de l’orientation du joueur (trait rouge sur le bord correspondant)
         ep = 6
         rouge = (255, 0, 0)
 
