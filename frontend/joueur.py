@@ -10,14 +10,12 @@ class Joueur:
         self.colonne = colonne
         self.orientation = "haut"
 
-        self.footprint = 2
+        self.footprint = 70
         self.coins = 0
         self.gems = 2
         self.keys = 0
         self.dice = 10
 
-
-        
 
     def orienter(self, direction):
         self.orientation = direction

@@ -175,8 +175,9 @@
       "doors": ["S", "E", "W"],
       "placement": { "border": 0 },
       "loot": [
-        { "id": "apple", "qty": 1, "p": 0.5 },
-        { "id": "gem",   "qty": 1, "p": 0.5 }
+        { "id": "apple", "qty": 1, "p": 0.33 },
+        { "id": "gem",   "qty": 1, "p": 0.33 },
+        {"id": "key", "qty":1, "p":0.33}
       ]
     },
     {

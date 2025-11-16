@@ -1,5 +1,6 @@
 from backend.loader import charger_catalogue
 from typing import Tuple
+import random
 
 ROOM_CATALOG = charger_catalogue() #on récupère le catalogue des pièces depuis le loader
 
@@ -37,11 +38,14 @@ class Piece :
         self.doors = self.calculer_portes_orientees()  #on modifie les portes selon l'orientation
         #print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
         self.placement = ROOM_CATALOG[self.id]["placement"] 
-        self.loot = ROOM_CATALOG[self.id]["loot"] 
+        self.loot_table = ROOM_CATALOG[self.id]["loot"] 
+        #print(f"Table de loot de la pièce {self.id} : {self.loot_table}")
+        self.loot = self.generer_loot() #on génère le loot de la pièce à sa création
+        #print(f"Loot généré pour la pièce {self.id} : {self.loot}")
     
     def calculer_portes_orientees(self):
             """Renvoie la liste des portes pivotées selon l'orientation de la pièce."""
-            if not self.doors: #on s'assure qu'il y ait des portes dans la pièce
+            if not self.doors:                          #on s'assure qu'il y ait des portes dans la pièce
                 return []
             rotation_map = {0:0, 90:1, 180:2, 270:3}  #nb de quarts de tour à effectuer selon l'angle de la pièce
             nb_quarts = rotation_map[self.orientation]
@@ -60,8 +64,61 @@ class Piece :
         """
         self.locked_door = None
 
-    def contenu_piece(self):
-        """Fonction à implémenter : renvoie le contenu de la pièce (pièces, nourriture, clés) à partir des données du catalogue (self.loot)
-        """
-        self.contenu = None
 
+    def generer_loot(self):
+
+        resultat = []
+        if not self.loot_table:   #pour les 2 pièces de début et toute pièce sans llot
+            return []
+        
+        table = self.loot_table[0]
+        print("table:",table)
+
+        # -----------------------------
+        # CAS 1 : LOOT DE TYPE "POOL"
+        # -----------------------------
+        if table.get("type") == "pool":
+
+            items = table["items"]
+            take = table["take"]
+
+            # Construire la liste des candidats
+            candidats = []
+
+            for item in items:
+                qty = item.get("qty", 1)
+
+                if isinstance(qty, dict):
+                    # quantité min/max aléatoire
+                    n = random.randint(qty.get("min", 1), qty.get("max", 1))
+                else:
+                    n = qty
+
+                # Ajouter n fois l'ID à la liste des candidats
+                candidats.extend([item["id"]] * n)
+
+            # Tirage aléatoire de "take" éléments
+            tirage = random.sample(candidats, min(take, len(candidats)))
+            resultat.extend(tirage)
+
+            return resultat
+
+        # --------------------------------------
+        # CAS 2 : LOOT PROBABILISTE SIMPLE
+        # --------------------------------------
+        else:
+            for item in self.loot_table:
+                qty = item.get("qty", 1)
+
+                if isinstance(qty, dict):
+                    n = random.randint(qty.get("min", 1), qty.get("max", 1))
+                else:
+                    n = qty
+
+                # On fait "n" tirages indépendants avec probabilité p
+                p = item.get("p", 1)
+                for _ in range(n):
+                    if random.random() < p:
+                        resultat.append(item["id"])
+
+            return resultat
