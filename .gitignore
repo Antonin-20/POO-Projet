@@ -55,6 +55,7 @@ var/
 *.tar.gz
 *.h5
 *.pkl
-*.pdf
+# necessaire pour mettre le rapport
+#*.pdf 
 prompt_GPT.txt
 Avancement.txt
