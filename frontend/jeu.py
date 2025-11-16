@@ -35,6 +35,8 @@ class Jeu:
         #self.room_catalog = room_catalog #on donne cet attribur à la classe simplement pour pouvoir le passer dans creer_nouvelle_pièce
         self.menu_actif = True
 
+        self.loot_index = 0  # index de l'objet sélectionné dans le loot
+
         initialiser_pool() #création de la pioche initiale au chargement du jeu
 
 
@@ -178,7 +180,9 @@ class Jeu:
 
     def boucle_principale(self, room_catalog):
         while True:
-                
+
+            piece_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
@@ -344,6 +348,48 @@ class Jeu:
                                     self.popup.message_dé = "Pas assez de dés !"
                                     self.popup.message_timer = pygame.time.get_ticks()
 
+                
+                # -----------------------------------------
+                    #           DEPLACEMENT DANS INVENTAIRE
+                    # -----------------------------------------
+
+                if piece_actuelle and piece_actuelle.loot:
+            
+                    mouse_pos = pygame.mouse.get_pos()
+                    mouse_click = pygame.mouse.get_pressed()[0]  # clic gauche
+
+                    zones_loot = self.inventaire.affichage_objet_piece(
+                        loot=piece_actuelle.loot,
+                        surface=self.screen,
+                        joueur=self.joueur,
+                        largeur_fenetre=largeur,
+                        hauteur_fenetre=hauteur
+                    )
+                    
+                    if mouse_click:
+                        print("ffvsvsf")
+                        for i, rect in enumerate(zones_loot):
+                            if rect.collidepoint(mouse_pos):
+                                objet = piece_actuelle.loot[i]
+
+                                if objet in ["metal_detector", "rabbit_trap", "lockpick"]:
+                                    self.inventaire.objets_speciaux.append(objet)
+                                elif objet in ["food", "banana", "apple"]:
+                                    self.joueur.footprint += 5
+                                elif objet in ["gem"]:
+                                    self.joueur.gems += 1
+                                elif objet in ["die"]:
+                                    self.joueur.dice += 1
+                                elif objet in ["coin"]:
+                                    self.joueur.coins += 1
+                                elif objet == "key":
+                                    self.joueur.keys += 1
+
+                                piece_actuelle.loot.pop(i)
+                                self.loot_index = 0
+                                break
+
+
                 # -----------------------------------------
                 #         REDIMENSIONNEMENT DE FENÊTRE
                 # -----------------------------------------
@@ -367,6 +413,8 @@ class Jeu:
                 self.inventaire.affichage(self.screen, self.joueur, largeur, hauteur, self.font, self.manoir)
 
                 piece_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
+
+
                 if piece_actuelle:
                     self.inventaire.affichage_objet_piece(
                         loot=piece_actuelle.loot,

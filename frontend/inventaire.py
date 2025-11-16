@@ -74,6 +74,7 @@ class Inventaire:
                 self.room_images_scaled[r["id"]] = img
 
 
+
     # --- Affichage de l'inventaire ---
 
     def affichage(self, surface, joueur, largeur_fenetre, hauteur_fenetre, font, manoir):
@@ -171,6 +172,9 @@ class Inventaire:
             font (pygame.font.Font): police pour le texte
         """
 
+        zones_loot = []  # liste de pygame.Rect correspondant à chaque objet
+
+
         if not loot:
             # afficher un message "Aucun objet dans cette pièce"
             return
@@ -185,5 +189,8 @@ class Inventaire:
 
             for i, obj in enumerate(loot):
                 texte_surface = font.render(obj, True, COUL_TEXTE)
-                surface.blit(texte_surface, (x_position, y_position + i * espacement))
+                rect = texte_surface.get_rect(topleft=(x_position, y_position + i * espacement))
+                surface.blit(texte_surface, rect.topleft)
+                zones_loot.append(rect)
+        return zones_loot
     
