@@ -3,6 +3,8 @@ import sys
 import os
 from frontend.constantes import *
 from backend.aleatoire_generation_pieces import *
+from frontend.joueur import Joueur
+from backend.manoir import Manoir
 import json
 
 # --- Chargement du JSON pour récupérer toutes les infos des rooms ---
@@ -28,9 +30,28 @@ class Inventaire:
         self.message = ""
         self.message_timer = 0
 
+        self.taille_case_piece = 180 #même taille que la case "pièce actuelle"
 
-    # --- Affichage de l'inventaire et du popup ---
-    def affichage(self, surface, joueur, largeur_fenetre, hauteur_fenetre, font):
+        # Précharger les images redimensionnées pour le carré "Pièce actuelle"
+        # On redimensionne une seules fois tous les images des pièces à la taille de la case pour une bonne qualité
+        self.room_images_scaled = {} #là où sera stocké l'id des images
+        for r in rooms:
+            chemin = os.path.join("assets", r["image"])
+            if os.path.exists(chemin):
+                img = pygame.image.load(chemin).convert_alpha()#récupère l'image
+                # Redimensionne directement à la taille de la case
+                img = pygame.transform.smoothscale(img, (self.taille_case_piece, self.taille_case_piece))
+                self.room_images_scaled[r["id"]] = img
+
+
+    # --- Affichage de l'inventaire ---
+    """
+    
+    Cette méthode affiche le compteur des objets, la case actuelle du joueur et un message si le joueur
+    rencontre un mur
+                                     
+    """
+    def affichage(self, surface, joueur, largeur_fenetre, hauteur_fenetre, font, manoir):
         x_inv = LARGEUR_GRILLE_FIXE
         largeur_inv = max(largeur_fenetre - LARGEUR_GRILLE_FIXE, 200)
         zone = pygame.Rect(x_inv, 0, largeur_inv, hauteur_fenetre)
@@ -53,6 +74,18 @@ class Inventaire:
         joueur_rect = pygame.Rect(pos_x_current_pos, pos_y_current_pos, taille_case, taille_case)
         pygame.draw.rect(surface, (100, 100, 150), joueur_rect)
         pygame.draw.rect(surface, (255, 255, 255), joueur_rect, 3)
+
+        #récupérer la pièce actuelle
+        ligne, col = joueur.ligne, joueur.colonne
+        piece_actuelle = manoir.grille[ligne][col]
+
+        # --- Afficher l'image de la pièce actuelle ---
+        if piece_actuelle is not None:
+            room_id = piece_actuelle.id
+            if room_id in self.room_images_scaled:
+                img = self.room_images_scaled[room_id]
+                # Affiche l'image directement dans le carré
+                surface.blit(img, joueur_rect.topleft)
 
         #Affichage du message quand pas de portes 
         if self.message and pygame.time.get_ticks() - self.message_timer < 3000:

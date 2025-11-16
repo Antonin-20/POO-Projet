@@ -379,7 +379,7 @@ class Jeu:
                 self.manoir.ajout_piece(self.screen, self.joueur, 0, 0)
 
                 # inventaire à droite
-                self.inventaire.affichage(self.screen, self.joueur, largeur, hauteur, self.font)
+                self.inventaire.affichage(self.screen, self.joueur, largeur, hauteur, self.font, self.manoir)
 
                 # --- Affichage du popup si actif ---
                 if self.popup.afficher:
