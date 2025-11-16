@@ -349,12 +349,15 @@ class Jeu:
 
                             # Vérification porte verrouillée
                             if piece_depart.locked_doors.get(porte_depart, 0) == 1:
-                                self.inventaire.message = "La porte est verrouillée !"
-                                self.inventaire.message_timer = pygame.time.get_ticks()
-
-                                piece_depart.utiliser_cle(porte_depart)
-                                joueur.keys -= 1
-                                continue
+                                
+                                if self.joueur.keys > 0:
+                                    #afficher le popup
+                                    piece_depart.utiliser_cle(porte_depart)
+                                    self.joueur.keys -= 1
+                                else:
+                                    self.inventaire.message = "La porte est verrouillée !"
+                                    self.inventaire.message_timer = pygame.time.get_ticks()
+                                    continue
 
                             # Vérification de la présence des deux portes
                             if porte_depart not in portes_depart or (piece_cible and porte_arrivee not in portes_cible):
