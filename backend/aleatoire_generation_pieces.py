@@ -1,10 +1,9 @@
 import json, random, os
 
 """chaque niveau de rareté divise par 3 la proba de tirer une pièce
-On décide de tirer une rareté de pièce (tirage pondéré), puis de tirer une pièce au hasard avec la même proba parmis toutes les pièces de même rareté
+On décide de tirer en premier une rareté de pièce (tirage pondéré), puis de tirer une pièce au hasard de cette rareté (tirage uniforme)
 la fonction choix_pièce() permet de retourner le nom de la pièce à ajouter
 """
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))  
 json_path = os.path.join(BASE_DIR, "assets", "Data", "room_catalog.json")
@@ -46,7 +45,7 @@ def choix_pièce():
         pièce_choisie = random.choice(rooms_three)
     return pièce_choisie
 
-POOL = []  #on le place ici pour pouvoir appeler la fonciton depuis ailleurs, inventaire.py par exemple
+POOL = []  #on le place ici pour pouvoir appeler la fonction depuis ailleurs, inventaire.py par exemple
 
 def pool():
     """création du 'Pool' (pioche) de pièces pour le manoir à l'initialisation du jeu. Ne s'exécute qu'une fois par partie.
@@ -55,7 +54,7 @@ def pool():
         list: liste des pièces de la pioche
     """
 
-    n = 43             #nombre de pièces totales dans le pool pour le manoir, fixe a priori
+    n = 43             #nombre de pièces totales dans le pool pour remplir theoriquement le manoir
     for i in range(n):
         POOL.append(choix_pièce())
     return POOL
@@ -67,12 +66,9 @@ def initialiser_pool():
     print('pioche initiale :',POOL)
 
 
-
-
-
 def extrait_pool(catalog,ligne,colonne):
     """sert à obtenir les 3 pièces aléatires du pool lors du choix du joueur. Contient toutes les contraites possibles 
-    (pour l'instant, juste que les pièces soient différentes entre elles).
+    (pour l'instant, uniquement le fait que les pieces soient uniques).
     """
     def piece_est_valide(piece_id):
         """permet de créer un sous-pool ne contenant que les pièces valides pour l'emplacement choisi
@@ -86,7 +82,6 @@ def extrait_pool(catalog,ligne,colonne):
         data = catalog[piece_id]
         border = data["placement"]["border"]
         doors = data["doors"]                       #à exploiter pour éviter de tomber sur des couloirs sans issue
-
 
 
         if border == 0:  # partout
@@ -114,15 +109,13 @@ def extrait_pool(catalog,ligne,colonne):
     #s'il reste moins de 3 pièces valides dans le pool, message d'erreur
     if len(pool_filtré) < 3:
         print("Il n'y a plus assez de pièces valides pour cet emplacement")
-        #faire quand même un pool, mais sans contrainetr
+        #faire quand même un pool, mais sans contraintes, afin de continuer a placer des pieces
         pool_filtré = list(set(POOL))
 
     choix = random.sample(list(set(pool_filtré)), 3) #on s'assure que les 3 pièces soient différentes
     print('pioche filtrée:',choix)
 
-
     return choix
-
 
 
 def retirer_piece_du_pool(piece_id):
