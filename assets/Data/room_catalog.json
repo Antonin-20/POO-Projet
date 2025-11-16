@@ -155,13 +155,13 @@
       "id": "courtyard",
       "name": "Courtyard",
       "color": "GREEN",
-      "rarity": 1,
+      "rarity": 2,
       "gem_cost": 1,
       "image": "Images/rooms/Courtyard.png",
       "doors": ["S", "E", "W"],
       "placement": { "border": 0 },
       "loot": [
-        { "id": "metal_detector", "qty": 1, "p": 0.33 }
+        { "id": "metal_detector", "qty": 1, "p": 0.1 }
       ]
     },
 
@@ -261,6 +261,65 @@
       "loot": [
         { "id": "key", "qty": 1, "p": 1 },
         { "id": "die", "qty": 1, "p": 0.15 }
+      ]
+    },
+    {
+      "id": "storeroom",
+      "name": "Storeroom",
+      "color": "BLUE",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "Images/rooms/Storeroom.png",
+      "doors": ["S"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "key", "qty": 1, "p": 1 },
+        { "id": "gem", "qty": 1, "p": 1}
+      ]
+    },
+    {
+      "id": "trophy_room",
+      "name": "Trophy_Room",
+      "color": "BLUE",
+      "rarity": 3,
+      "gem_cost": 5,
+      "image": "Images/rooms/Trophy_Room.png",
+      "doors": ["S", "E"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "gem", "qty": 8, "p": 1 },
+        { "id": "die", "qty": 1, "p": 0.15 }
+      ]
+    },
+    {
+      "id": "wine_cellar",
+      "name": "Wine_Cellar",
+      "color": "BLUE",
+      "rarity": 2,
+      "gem_cost": 0,
+      "image": "Images/rooms/Wine_Cellar.png",
+      "doors": ["S"],
+      "placement": { "border": 0 },
+      "loot": [
+        { "id": "gem", "qty": 3, "p": 1 },
+        { "id": "die", "qty": 2, "p": 0.15},
+        { "id": "key", "qty": 1, "p": 0.2},
+        { "id": "lockpick", "qty": 1, "p": 0.1}
+      ]
+    },
+    {
+      "id": "garage",
+      "name": "Garage",
+      "color": "BLUE",
+      "rarity": 2,
+      "gem_cost": 1,
+      "image": "Images/rooms/Garage.png",
+      "doors": ["S"],
+      "placement": { "border": 2 },
+      "loot": [
+        { "id": "key", "qty": 3, "p": 1 },
+        { "id": "metal_detector", "qty": 1, "p": 0.1},
+        { "id": "lockpick",      "qty": 1, "p": 0.1} 
       ]
     }
   ]

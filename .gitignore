@@ -56,6 +56,5 @@ var/
 *.h5
 *.pkl
 *.pdf
-*.txt
-
-promp_GPT.txt
+prompt_GPT.txt
+Avancement.txt

@@ -2,10 +2,7 @@ from backend.loader import charger_catalogue
 from typing import Tuple
 import random
 
-
 ROOM_CATALOG = charger_catalogue() #on récupère le catalogue des pièces depuis le loader
-
-#print(ROOM_CATALOG["kitchen"]["doors"]) #je me garde un exemple d'accès aux données du catalogue, ne pas suppr tt de suite svp
 
 class Piece :
     def __init__(self, id_piece: str, position: Tuple[int, int], direction_regard: str,objets_speciaux: list):
@@ -37,9 +34,7 @@ class Piece :
 
         self.doors = ROOM_CATALOG[self.id]["doors"]
         self.doors = self.calculer_portes_orientees()  #on modifie les portes selon l'orientation
-        #print(f"Portes après orientation de la pièce {self.id} : {self.doors}")
-        self.locked_doors = self.which_locked_door()
-        #print(f"État des portes de la pièce {self.id} : {self.locked_doors}")
+        self.locked_doors = self.which_locked_door()   #dict avec l'état des portes
 
         self.placement = ROOM_CATALOG[self.id]["placement"] 
         self.loot_table = ROOM_CATALOG[self.id]["loot"] 
