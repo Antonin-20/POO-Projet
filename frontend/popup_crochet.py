@@ -3,7 +3,25 @@ from frontend.constantes import *
 
 class PopupCrochet:
 
+    """
+    Classe représentant un popup de confirmation pour le crochetage d'une porte.
+
+    Attributs :
+        joueur (Joueur) : instance du joueur courant.
+        afficher (bool) : indique si le popup doit être affiché.
+        selection (int) : option sélectionnée, 0 = Oui, 1 = Non.
+        message_timer (int) : timestamp pour gérer l'affichage temporaire des messages.
+        message_duration (int) : durée d'affichage des messages en millisecondes.
+    """
+
     def __init__(self, joueur):
+
+        """
+        Initialise le popup pour le crochetage.
+
+        Args:
+            joueur (Joueur) : instance du joueur qui va utiliser le crochetage.
+        """
         self.joueur = joueur
         self.afficher = False
         self.selection = 0  # 0 = Oui, 1 = Non
@@ -11,14 +29,30 @@ class PopupCrochet:
         self.message_duration = 1000
 
     def changer_selection_crochet(self, direction: str):
-        """Changer la sélection Oui/Non dans le popup"""
+
+        """
+        Change la sélection du popup (Oui/Non) en fonction de la direction donnée.
+
+        Args:
+            direction (str) : "gauche", "droite", "haut", ou "bas".
+        """
+
         if direction in ["gauche", "haut"]:
             self.selection = (self.selection - 1) % 2
         elif direction in ["droite", "bas"]:
             self.selection = (self.selection + 1) % 2
 
     def affichage_popup_crochet(self, surface, largeur_fenetre, hauteur_fenetre):
-        """Afficher le popup de crochetage"""
+        
+        """
+        Affiche le popup de confirmation pour crocheter une porte.
+
+        Args:
+            surface (pygame.Surface) : surface sur laquelle dessiner le popup.
+            largeur_fenetre (int) : largeur de la fenêtre.
+            hauteur_fenetre (int) : hauteur de la fenêtre.
+        """
+
         if not self.afficher:
             return
 

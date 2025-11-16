@@ -6,7 +6,26 @@ from frontend.constantes import *
 
 class PopupKey:
 
+    """
+    Classe représentant un popup de confirmation pour l'utilisation d'une clé.
+
+    Attributs :
+        joueur (Joueur) : instance du joueur courant.
+        afficher (bool) : indique si le popup doit être affiché.
+        selection (int) : option sélectionnée, 0 = Oui, 1 = Non.
+        message_timer (int) : timestamp pour gérer l'affichage temporaire des messages.
+        message_duration (int) : durée d'affichage des messages en millisecondes.
+    """
+
     def __init__(self, joueur):
+
+        """
+        Initialise le popup pour l'utilisation de clé.
+
+        Args:
+            joueur (Joueur) : instance du joueur qui va utiliser la clé.
+
+        """
         self.joueur = joueur
         self.afficher = False
         self.selection = 0  # 0 = Oui, 1 = Non
@@ -23,12 +42,31 @@ class PopupKey:
             self.image_cle = None
 
     def changer_selection_key(self, direction: str):
+
+        """
+        Change la sélection du popup
+
+        Args:
+            direction (str) : "gauche", "droite", "haut", ou "bas".
+        
+        """
         if direction == "gauche" or direction == "haut":
             self.selection = (self.selection - 1) % 2
         elif direction == "droite" or direction == "bas":
             self.selection = (self.selection + 1) % 2
 
     def affichage_popup_key(self, surface, largeur_fenetre, hauteur_fenetre, joueur):
+
+        """
+        Affiche le popup de confirmation pour utiliser une clé.
+
+        Args:
+            surface (pygame.Surface) : surface sur laquelle dessiner le popup.
+            largeur_fenetre (int) : largeur de la fenêtre.
+            hauteur_fenetre (int) : hauteur de la fenêtre.
+            joueur (Joueur) : instance du joueur, utilisée pour les informations si nécessaire.
+        """
+        
         if not self.afficher:
             return
 
