@@ -361,7 +361,7 @@ class Jeu:
                                 if self.joueur.dice > 0:
                                     self.joueur.dice -= 1
                                     # juste mettre à jour les pièces
-                                    self.popup.room_choices = extrait_pool()
+                                    self.popup.room_choices = extrait_pool(room_catalog,cible_ligne,cible_colonne)
                                     print("Nouvelles pièces :", self.popup.room_choices)
                                     self.popup.room_choice_index = 0
                                 else:
