@@ -79,7 +79,7 @@ class Piece :
                         7: 0.5053125,    
                         8: 0.66         
                                 }                  #dico proba verr selon lvl, quadratique
-        etat_portes = []
+        etat_portes = {}
         if self.orientation == 0:
             porte_origine = "S"
         elif self.orientation == 90:
@@ -91,13 +91,13 @@ class Piece :
 
         for p in portes:
             if p == porte_origine:
-                etat_portes.append(0)  #la porte d'ou l'on vient est toujours déverrouillée
+                etat_portes[p] = 0  #la porte d'ou l'on vient est toujours déverrouillée
             
             else : 
                 if random.random() < proba_portes[niveau]:
-                    etat_portes.append(1)  #1 = porte verrouillée
+                    etat_portes[p] = 1  #1 = porte verrouillée
                 else:
-                    etat_portes.append(0)  #0 = porte déverrouillée
+                    etat_portes[p] = 0  #0 = porte déverrouillée
 
         return etat_portes
     

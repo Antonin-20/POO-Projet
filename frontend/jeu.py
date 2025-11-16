@@ -165,45 +165,14 @@ class Jeu:
             pygame.draw.rect(self.screen, (255,255,255), rect, 2)
 
     def creer_nouvelle_piece(self,room_catalog,cible_ligne,cible_colonne):
-        # Tirer 3 pièces depuis le pool
-        choix = extrait_pool(room_catalog,cible_ligne,cible_colonne)
+        
+        choix = extrait_pool(room_catalog,cible_ligne,cible_colonne) #On tire 3 pièces du pool selon les contraintes
 
 
         self.popup.room_choices = choix # stocke les 3 pièces
         self.popup.room_choice_index = 0
         self.popup.afficher = True # Pour afficher le popup
         self.phase_choix = True
-
-
-
-
-        # while self.phase_choix:
-        #     for event in pygame.event.get():
-        #         if event.type == pygame.QUIT:
-        #             pygame.quit()
-        #             sys.exit()
-        #         if event.type == pygame.KEYDOWN:
-        #             if event.key == pygame.K_q:
-        #                 self.inventaire.changer_selection("gauche")
-        #             elif event.key == pygame.K_d:
-        #                 self.inventaire.changer_selection("droite")
-        #             elif event.key == pygame.K_SPACE:
-        #                 selection = self.inventaire.room_choices[self.inventaire.room_choice_index]
-
-        #                 # Placer la pièce
-        #                 ligne, col = self.joueur.ligne, self.joueur.colonne
-        #                 nouvelle_piece = Piece(selection, (ligne, col), self.joueur.orientation)
-        #                 self.manoir.grille[ligne][col] = nouvelle_piece
-
-        #                 # Retirer la pièce choisie et remettre les autres dans le pool
-        #                 retirer_piece_du_pool(selection)
-        #                 autres = [p for p in choix if p != selection]
-        #                 remettre_pieces_dans_pool(autres)
-
-        #                 # Fin du choix
-        #                 self.phase_choix = False
-        #                 self.inventaire.afficher_room_choices = False
-
 
 
     def boucle_principale(self, room_catalog):
