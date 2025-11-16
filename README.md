@@ -1,8 +1,6 @@
-# README.md
-
 # Projet Blue Prince
 
-Le projet Blue Prince est une reproduction simplifiée en 2 dimensions du jeu vidéo Blue Prince, développé par Dogubomb et publié en avir 2025.
+Le projet Blue Prince est une reproduction simplifiée en 2 dimensions du jeu vidéo Blue Prince, développé par Dogubomb et publié en avril 2025.
 
 ## Prérequis
 
@@ -11,14 +9,14 @@ Le projet Blue Prince est une reproduction simplifiée en 2 dimensions du jeu vi
 
 ## Installation
 
-1. Créer un environnement virtuel (optionnel mais recommandé) :  
+1. Créer un environnement virtuel :  
    ```bash
    python3 -m venv env
    source env/bin/activate   # Linux / macOS
    env\Scripts\activate      # Windows
    ```
 
-2. Installe les dépendances :  
+2. Installer les dépendances (seulement pour pygame, le reste des bibliothèques est natif) :  
    ```bash
    pip install -r requirements.txt
    ```
@@ -32,6 +30,7 @@ python main.py
 ## Commandes
 
 - Déplacer le personnage : Z/Q/S/D
+- Valider : Enter
 - Interagir avec les objets : touche E (ou autre)
 - Ramasser un objet dans une pièce et reroll : clic souris
 
