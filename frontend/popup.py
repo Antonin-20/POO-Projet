@@ -69,7 +69,7 @@ class Popup:
         self.message_duration = 1000  # durée en ms (2s)
 
     def changer_selection(self, direction: str):
-                """
+        """
         Change la sélection courante parmi les pièces tirées avec Q/D.
 
         direction : str

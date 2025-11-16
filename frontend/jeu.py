@@ -367,14 +367,14 @@ class Jeu:
                     )
                     
                     if mouse_click:
-                        print("ffvsvsf")
+                        
                         for i, rect in enumerate(zones_loot):
                             if rect.collidepoint(mouse_pos):
                                 objet = piece_actuelle.loot[i]
 
-                                if objet in ["metal_detector", "rabbit_trap", "lockpick"]:
+                                if objet in ["metal_detector", "lucky_paw", "lockpick"]:
                                     self.inventaire.objets_speciaux.append(objet)
-                                elif objet in ["food", "banana", "apple"]:
+                                elif objet in ["food", "banana", "apple", "cupcake"]:
                                     self.joueur.footprint += 5
                                 elif objet in ["gem"]:
                                     self.joueur.gems += 1
