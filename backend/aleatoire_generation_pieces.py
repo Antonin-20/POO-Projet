@@ -63,7 +63,6 @@ def initialiser_pool():
     """Crée la pioche initiale, stockée dans la variable globale POOL au sein de aleatoire_generation_pieces.py"""
     global POOL
     POOL = pool()  
-    print('pioche initiale :',POOL)
 
 
 def extrait_pool(catalog,ligne,colonne):
