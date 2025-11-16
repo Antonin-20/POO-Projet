@@ -23,7 +23,7 @@ class Jeu:
         self.joueur = Joueur() # objet joueur
         self.inventaire = Inventaire(room_catalog) # objet inventaire
         self.manoir = Manoir(room_catalog) # objet manoir
-        self.popup = Popup() # objet popup
+        self.popup = Popup(self.joueur) # objet popup
 
         self.plein_ecran = False
         self.phase_choix = False  # vrai quand on choisit une salle
@@ -374,8 +374,8 @@ class Jeu:
                                     print("Nouvelles pièces :", self.popup.room_choices)
                                     self.popup.room_choice_index = 0
                                 else:
-                                    self.inventaire.message = "Pas assez de dés !"
-                                    self.inventaire.message_timer = pygame.time.get_ticks()
+                                    self.popup.message_dé = "Pas assez de dés !"
+                                    self.popup.message_timer = pygame.time.get_ticks()
 
                 # -----------------------------------------
                 #         REDIMENSIONNEMENT DE FENÊTRE

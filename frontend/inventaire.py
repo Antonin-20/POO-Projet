@@ -52,6 +52,12 @@ class Inventaire:
                                      
     """
     def affichage(self, surface, joueur, largeur_fenetre, hauteur_fenetre, font, manoir):
+        """
+    
+        Cette méthode affiche le compteur des objets, la case actuelle du joueur et un message si le joueur
+        rencontre un mur
+                                            
+        """
         x_inv = LARGEUR_GRILLE_FIXE
         largeur_inv = max(largeur_fenetre - LARGEUR_GRILLE_FIXE, 200)
         zone = pygame.Rect(x_inv, 0, largeur_inv, hauteur_fenetre)
