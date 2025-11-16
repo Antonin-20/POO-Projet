@@ -131,11 +131,7 @@ class Inventaire:
             else:
                 self.message = ""  # effacer après 3 secondes
 
-<<<<<<< HEAD
         # Compteurs : contenu + display  
-=======
-        # ---- Compteurs ------
->>>>>>> b15d59c25763852568e9edd4578fbdd1f0a19a2a
         compteur_texte = font.render(str(joueur.footprint), True, COUL_TEXTE)
         x_compteur = x_inv + largeur_inv - TAILLE_ICONE - 20 - compteur_texte.get_width() - 10
         y_compteur = 68

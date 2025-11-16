@@ -34,7 +34,7 @@ class Manoir:
         # on crée une grille initialisee avec antichamber + entrance qui va ensuite contenir toutes les pièces créées lors de la génération
         self.grille =  [[None for i in range(NB_COLONNES)] for i in range(NB_LIGNES)] 
         self.grille[0][2] = Piece("entrance", (0, 2), "haut")
-        self.grille[NB_LIGNES-1][2] = Piece("antechamber", (NB_LIGNES-1, 2), "haut")
+        self.grille[8][2] = Piece("antechamber", (8, 2), "haut")
 
 
         # Dictionnaire avec les images des pieces 
