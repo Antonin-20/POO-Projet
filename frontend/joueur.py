@@ -42,6 +42,7 @@ class Joueur:
         self.gems = 2
         self.keys = 0
         self.dice = 10
+        self.objets_speciaux = []
 
         # Pièce actuelle du joueur
         self.piece = Piece("entrance", (ligne, colonne), self.orientation) # a changer les paramètres

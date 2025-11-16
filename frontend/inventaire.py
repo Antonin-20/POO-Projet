@@ -73,8 +73,6 @@ class Inventaire:
                 img = pygame.transform.smoothscale(img, (self.taille_case_piece, self.taille_case_piece))
                 self.room_images_scaled[r["id"]] = img
 
-        self.objets_speciaux = []
-
 
 
     # --- Affichage de l'inventaire ---
@@ -106,13 +104,14 @@ class Inventaire:
         surface.blit(titre2, (x_inv + 130, inventaire_y - 440))
 
         # affichage des objets spéciaux en dessous de l'inventaire
-        y_special = hauteur_fenetre - 260
-        espacement_special = 30
-        font = pygame.font.SysFont("arial", 18)
+        if joueur.objets_speciaux:
+            y_special = hauteur_fenetre - 260
+            espacement_special = 30
+            font = pygame.font.SysFont("arial", 18)
 
-        for i, obj in enumerate(self.objets_speciaux):
-            texte_surface = font.render(obj, True, COUL_TEXTE)
-            surface.blit(texte_surface, (x_inv + 20, y_special + i * espacement_special))
+            for i, obj in enumerate(joueur.objets_speciaux):
+                texte_surface = font.render(obj, True, COUL_TEXTE)
+                surface.blit(texte_surface, (x_inv + 20, y_special + i * espacement_special))
 
         taille_case = 180
         pos_x_current_pos = x_inv + 100

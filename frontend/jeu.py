@@ -373,7 +373,8 @@ class Jeu:
                                 objet = piece_actuelle.loot[i]
 
                                 if objet in ["metal_detector", "lucky_paw", "lockpick"]:
-                                    self.inventaire.objets_speciaux.append(objet)
+                                    self.joueur.objets_speciaux.append(objet)
+                                    print(f"ajout : {self.joueur.objets_speciaux}")
                                 elif objet in ["food", "banana", "apple", "cupcake"]:
                                     self.joueur.footprint += 5
                                 elif objet in ["gem"]:
