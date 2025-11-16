@@ -12,35 +12,63 @@ from backend.aleatoire_generation_pieces import *
 
 
 class Jeu:
+    """
+    Gère le déroulement global dune partie de Blue Prince.
+
+    Cette classe :
+      - initialise la fenêtre, les ressources et les principales entités du jeu
+        (joueur, manoir, inventaire, popup),
+      - gère les différents états (menu, partie en cours, phase de choix de salle,
+        écran de fin),
+      - orchestre la boucle principale : gestion des événements, mise à jour
+        de létat de jeu et affichage.
+    """
     def __init__(self,room_catalog):
+        """
+        Initialise le jeu, la fenêtre et les entités principales.
+
+            room_catalog : dict ou similaire
+            Catalogue des pièces utilisé pour la génération aléatoire et
+            l'instanciation du Manoir et de l'inventaire.
+        """
         pygame.init()
         self.screen = pygame.display.set_mode((900, 720), pygame.RESIZABLE)
         pygame.display.set_caption("Manoir Magique")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.SysFont("arial", 24)
 
-        # instanciation des classes
+        # instanciation des classes principales
         self.joueur = Joueur() # objet joueur
         self.inventaire = Inventaire(room_catalog) # objet inventaire
         self.manoir = Manoir(room_catalog) # objet manoir
         self.popup = Popup(self.joueur) # objet popup
        
-
         self.plein_ecran = False
-        self.phase_choix = False  # vrai quand on choisit une salle
+        self.phase_choix = False  # True quand on choisit une salle dans le popup
 
         self.message_fin = ""
         self.fin_jeu = False
         self.victoire = False
-        #self.room_catalog = room_catalog #on donne cet attribur à la classe simplement pour pouvoir le passer dans creer_nouvelle_pièce
+        #self.room_catalog = room_catalog #on donne cet attribut à la classe simplement pour pouvoir le passer dans creer_nouvelle_pièce
         self.menu_actif = True
 
-        self.loot_index = 0  # index de l'objet sélectionné dans le loot
+        # Index de l'objet sélectionné dans le loot
+        self.loot_index = 0
 
-        initialiser_pool() #création de la pioche initiale au chargement du jeu
+        # Création de la pioche initiale au chargement du jeu
+        initialiser_pool() 
 
 
     def afficher_menu(self):
+        """
+        Affiche le menu principal du jeu.
+
+        Comprend :
+          - le titre du jeu,
+          - un message de bienvenue,
+          - les instructions de base,
+          - la consigne de démarrage (ESPACE).
+        """
         self.screen.fill(COUL_MENU)
 
         # Titre
@@ -59,7 +87,7 @@ class Jeu:
             "Déplacements : Z Q S D",
             "Choisir une porte : Q / D",
             "Valider : ESPACE",
-            "But : Atteindre l’Antichambre avant de manquer de pas"
+            "But : Atteindre l'Antichambre avant de manquer de pas"
         ]
 
         for i, texte in enumerate(instructions):
@@ -76,7 +104,14 @@ class Jeu:
 
     
     def verification_fin(self):
-        """Vérifie si la partie est terminée (victoire ou défaite)."""
+        """
+        Vérifie si la partie est terminée (victoire ou défaite).
+
+        Conditions :
+          - Victoire : le joueur atteint la case de l'Antichambre.
+          - Défaite : le joueur n'a plus de pas disponibles (`footprint <= 0`).
+        Met à jour les attributs `fin_jeu`, `victoire` et `message_fin`.
+        """
 
         if self.joueur.ligne == NB_LIGNES - 1 and self.joueur.colonne == 2: # Position de l'Antichambre
             self.victoire = True
@@ -86,11 +121,17 @@ class Jeu:
         elif self.joueur.footprint <= 0:
             self.victoire = False
             self.fin_jeu = True
-            self.message_fin = "perdu, t'as plus de pas"
+            self.message_fin = "perdu, tu n'as plus de pas"
 
     def reinitialiser_jeu(self, room_catalog):
-        """Réinitialise les variables du jeu pour une nouvelle partie.
-        pas fonctionnel pour le momment : il faut remettre à zéro le pool, le manoir et retirer un pool, un manoir, etc..."""
+        """ A METTRE A JOUR : pas fonctionnel pour le momment : il faut remettre à zéro le pool, le manoir et retirer un pool, un manoir, etc...
+        Réinitialise les variables du jeu pour une nouvelle partie.
+
+        room_catalog : dict ou similaire
+            Catalogue des pièces utilisé pour réinstancier le Manoir
+            et l'Inventaire.
+
+        """
         self.joueur = Joueur()
         self.inventaire = Inventaire(room_catalog)
         self.manoir = Manoir(room_catalog)
@@ -102,8 +143,14 @@ class Jeu:
         self.victoire = False
 
     def afficher_message_fin(self):
-        """Affiche un écran de fin avec message et option de recommencer."""
+        """
+        Affiche un écran de fin de partie.
 
+        Un overlay semi-transparent est dessiné, puis :
+          - le message de fin (`self.message_fin`) est affiché en vert
+            (victoire) ou en rouge (défaite),
+          - une instruction pour recommencer avec [ESPACE] est affichée.
+        """
         # on défini une surface semi-transparente de taille de l'écran (self.screen.get_size() )
         overlay = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA) # pygame.SRCALPHA pour la transparence
 
@@ -127,7 +174,15 @@ class Jeu:
         self.screen.blit(texte2, rect2)
 
     def afficher_fenetre_choix(self):
-        """Affiche une fenêtre centrale pour choisir la salle."""
+        """
+        Affiche une petite fenêtre centrale de choix de salle.
+
+        Affiche :
+          - une fenêtre modale centrée,
+          - un titre "Choisis une salle",
+          - trois cases correspondant aux choix possibles, avec mise en
+            évidence de la sélection via `self.inventaire.room_choice_index`.
+        """
         largeur, hauteur = self.screen.get_size()
         
         # Taille de la fenêtre
@@ -168,10 +223,20 @@ class Jeu:
             pygame.draw.rect(self.screen, (255,255,255), rect, 2)
 
     def creer_nouvelle_piece(self,room_catalog,cible_ligne,cible_colonne):
-        
-        choix = extrait_pool(room_catalog,cible_ligne,cible_colonne) #On tire 3 pièces du pool selon les contraintes
+        """
+        Tire de nouvelles pièces pour une case cible et active le popup.
 
+        room_catalog : dict ou similaire
+            Catalogue des pièces utilisé pour le tirage.
+        cible_ligne : int
+            Ligne de la case cible où la nouvelle pièce pourra être placée.
+        cible_colonne : int
+            Colonne de la case cible où la nouvelle pièce pourra être placée.
+        """
+        # On tire 3 pièces du pool selon les contraintes
+        choix = extrait_pool(room_catalog,cible_ligne,cible_colonne)
 
+        # Stockage des 3 pièces tirées dans le popup
         self.popup.room_choices = choix # stocke les 3 pièces
         self.popup.room_choice_index = 0
         self.popup.afficher = True # Pour afficher le popup
@@ -179,6 +244,17 @@ class Jeu:
 
 
     def boucle_principale(self, room_catalog):
+        """
+        Boucle principale du jeu.
+
+        Gère en continu :
+          - les événements (clavier, souris, redimensionnement),
+          - le menu principal,
+          - les déplacements du joueur et la phase de choix de salle,
+          - la gestion du loot et du bouton « Redraw »,
+          - la vérification des conditions de fin,
+          - l'affichage global (manoir, inventaire, popup, écran de fin).
+        """
         while True:
 
             piece_actuelle = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
@@ -208,10 +284,12 @@ class Jeu:
                 #           FULLSCREEN / RESIZE
                 # -----------------------------------------
                 if event.type == pygame.KEYDOWN: #si il y a un appui sur une touche
+                    # Sortie du plein écran
                     if event.key == pygame.K_ESCAPE and self.plein_ecran:
                         self.plein_ecran = False
                         self.screen = pygame.display.set_mode((900, 720), pygame.RESIZABLE)
 
+                    # Passage en plein écran
                     elif event.key == pygame.K_f:
                         self.plein_ecran = True
                         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -234,7 +312,7 @@ class Jeu:
 
                         # entrée en mode CHOIX DE SALLE
                         elif event.key == pygame.K_SPACE:
-                             # --- 1) CALCULER LA CASE CIBLE EN FONCTION DE L’ORIENTATION ---
+                            # 1) Calcul de la case cible en fonction de l’orientation
                             cible_ligne = self.joueur.ligne
                             cible_colonne = self.joueur.colonne
 
@@ -252,7 +330,7 @@ class Jeu:
                                 self.inventaire.message_timer = pygame.time.get_ticks()
                                 continue
 
-                            # --- 2) VERIFIER SI LA PORTE EXISTE DANS CETTE ORIENTATION ---
+                            # 2) Vérification de la présence d’une porte dans cette orientation
                             piece_depart = self.manoir.grille[self.joueur.ligne][self.joueur.colonne]
                             if piece_depart is not None:
                                 portes_depart = piece_depart.doors
@@ -263,24 +341,24 @@ class Jeu:
                             piece_cible = self.manoir.grille[cible_ligne][cible_colonne]
                             portes_cible = piece_cible.doors if piece_cible else []
 
-                            #On vérifie que 2 portes sont adjascentes avant de passer de l'une à l'autre 
+                            # Vérification cohérence double porte (porte face à porte opposée)
                             porte_depart = self.joueur.ORIENTATION_TO_DOOR[self.joueur.orientation]
                             opposite = {"N":"S", "S":"N", "E":"W", "W":"E"}
                             porte_arrivee = opposite[porte_depart]
 
-                            #On vérifie que la porte est déverrouillée
+                            # Vérification porte verrouillée
                             if piece_depart.locked_doors.get(porte_depart, 0) == 1:
                                 self.inventaire.message = "La porte est verrouillée !"
                                 self.inventaire.message_timer = pygame.time.get_ticks()
                                 continue
 
-                            # Vérification cohérence double porte (si une porte rencontre un mur)
+                            # Vérification de la présence des deux portes
                             if porte_depart not in portes_depart or (piece_cible and porte_arrivee not in portes_cible):
                                 self.inventaire.message = "Pas de porte dans cette direction !"
                                 self.inventaire.message_timer = pygame.time.get_ticks()
                                 continue
 
-                            # --- 3) CASE CIBLE ---
+                            # 3) Traitement de la case cible (occupée ou vide)
                             if piece_cible is not None:
                                 # case déjà occupée → déplacement direct
                                 self.joueur.deplacer(self.manoir, self.inventaire)
@@ -292,7 +370,7 @@ class Jeu:
 
 
                     # -----------------------------------------
-                    #           PHASE CHOIX DE SALLE
+                    #           PHASE CHOIX DE SALLE (popup)
                     # -----------------------------------------
                     else:
                         if event.key == pygame.K_q:
@@ -350,8 +428,8 @@ class Jeu:
 
                 
                 # -----------------------------------------
-                    #           DEPLACEMENT DANS INVENTAIRE
-                    # -----------------------------------------
+                #       RÉCUPÉRATION D’OBJETS (loot)
+                # -----------------------------------------
 
                 if piece_actuelle and piece_actuelle.loot:
             
@@ -367,14 +445,14 @@ class Jeu:
                     )
                     
                     if mouse_click:
-                        
+                        print("ffvsvsf")
                         for i, rect in enumerate(zones_loot):
                             if rect.collidepoint(mouse_pos):
                                 objet = piece_actuelle.loot[i]
 
-                                if objet in ["metal_detector", "lucky_paw", "lockpick"]:
+                                if objet in ["metal_detector", "rabbit_trap", "lockpick"]:
                                     self.inventaire.objets_speciaux.append(objet)
-                                elif objet in ["food", "banana", "apple", "cupcake"]:
+                                elif objet in ["food", "banana", "apple"]:
                                     self.joueur.footprint += 5
                                 elif objet in ["gem"]:
                                     self.joueur.gems += 1
