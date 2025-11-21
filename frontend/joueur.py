@@ -70,7 +70,7 @@ class Joueur:
         """
         Tente de déplacer le joueur dans la direction où il est orienté.
 
-        Le déplacement nest possible que si :
+        Le déplacement n'est possible que si :
           - la pièce courante possède une porte dans cette direction,
           - la case visée se situe dans les limites de la grille.
 
@@ -117,3 +117,6 @@ class Joueur:
         # Décrément de la ressource footprint si déplacement réussi
         if (self.ligne, self.colonne) != ancienne_pos:
             self.footprint = max(0, self.footprint - 1)
+
+        #Vérification de la propriété de la nouvelle pièce
+        

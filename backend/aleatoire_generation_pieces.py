@@ -57,6 +57,7 @@ def pool():
     n = 43             #nombre de pièces totales dans le pool pour remplir theoriquement le manoir
     for i in range(n):
         POOL.append(choix_pièce())
+    print(POOL)
     return POOL
 
 def initialiser_pool():

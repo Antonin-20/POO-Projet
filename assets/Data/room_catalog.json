@@ -216,9 +216,9 @@
       "doors": ["S", "E", "W"],
       "placement": { "border": 2 },
       "loot": [
-        { "id": "apple", "qty": 1, "p": 0.2 },
-        { "id": "key",   "qty": 1, "p": 0.2 },
-        { "id": "die",   "qty": 2, "p": 0.3 }
+        { "id": "apple", "qty": 1, "p": 0.1 },
+        { "id": "key",   "qty": 1, "p": 0.1 },
+        { "id": "die",   "qty": 2, "p": 0.2 }
       ]
     },
     {
@@ -231,7 +231,7 @@
       "doors": ["S", "E", "W"],
       "placement": { "border": 1 },
       "loot": [
-        { "id": "apple", "qty": 1, "p": 0.2 },
+        { "id": "apple", "qty": 1, "p": 0.1 },
         { "id": "key",   "qty": 1, "p": 0.2 }
       ]
     },
@@ -274,7 +274,8 @@
       "placement": { "border": 0 },
       "loot": [
         { "id": "key", "qty": 1, "p": 1 },
-        { "id": "gem", "qty": 1, "p": 1}
+        { "id": "gem", "qty": 1, "p": 1},
+        { "id" : "coin","qty" : 1,"p":1}
       ]
     },
     {
@@ -321,6 +322,18 @@
         { "id": "metal_detector", "qty": 1, "p": 0.1},
         { "id": "lockpick",      "qty": 1, "p": 0.1} 
       ]
-    }
+    },
+    { "id": "chapel",
+      "name": "CHAPEL",
+      "color": "RED",
+      "rarity": 0,
+      "gem_cost": 0,
+      "image": "Images/rooms/Chapel.png",
+      "doors": ["S", "E","W"],
+      "placement": { "border": 0 },
+      "loot": [
+        {"id" : "gem","qty": { "min": 1, "max": 2 }, "p": 0.05}
+      ],
+      "effet": "self.coins -= 1"}
   ]
 }

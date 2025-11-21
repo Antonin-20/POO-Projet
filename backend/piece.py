@@ -31,6 +31,7 @@ class Piece :
         self.rarity = ROOM_CATALOG[self.id]["rarity"]
         self.gem_cost = ROOM_CATALOG[self.id]["gem_cost"]
         self.image_path = ROOM_CATALOG[self.id]["image"]
+        self.effet = ROOM_CATALOG[self.id]["effet"] if "effet" in ROOM_CATALOG[self.id] else None  #dans le cas où la pièce possède un effet
 
         self.doors = ROOM_CATALOG[self.id]["doors"]
         self.doors = self.calculer_portes_orientees()  #on modifie les portes selon l'orientation
@@ -41,7 +42,6 @@ class Piece :
         self.objets_speciaux = objets_speciaux
         self.loot = self.generer_loot(self.objets_speciaux) #on génère le loot de la pièce à sa création
 
-    
     def calculer_portes_orientees(self):
             """Renvoie la liste des portes pivotées selon l'orientation de la pièce."""
             if not self.doors:                          #on s'assure qu'il y ait des portes dans la pièce
@@ -119,7 +119,6 @@ class Piece :
             return None                           #indique que la porte a été déverrouillée
         return None                              #indique que la porte était déjà déverrouillée
 
-
     def generer_loot(self,objets_speciaux):
         """Génère un loot pour chaque instance de pièce, à partir de la table de loot associée dans le .json.
         Si le joueur possède "metal_detector", augmente la probabilité d'obtenir clés ou pièces.
@@ -191,3 +190,17 @@ class Piece :
 
             return resultat
 
+    def verification_effet(self):
+        """analyse l'effet de la pièce, l'exécute s'il est simple, du type (self.coins += 1)
+
+        Returns:
+            None: rien à retourner pour le moment : on se contente d'exécuter la condition si elle existe.
+        """
+        if self.effet is None :
+            return None
+        elif self.effet.strip().startswith("self."):
+            exec(self.effet)
+        else:
+            print("Effet encore non implémenté")
+
+        return None

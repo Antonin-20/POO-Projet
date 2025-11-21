@@ -383,6 +383,7 @@ class Jeu:
                             if piece_cible is not None:
                                 # case déjà occupée → déplacement direct
                                 self.joueur.deplacer(self.manoir, self.inventaire)
+                                piece_cible.verification_effet()                        #on applique tout effet à l'entrée de la pièce
                                 self.verification_fin()
                             elif peut_creer_piece:
                                 # case vide → créer la nouvelle pièce avec pop-up
@@ -426,6 +427,7 @@ class Jeu:
 
 
                             # test de fin
+                            
                             self.verification_fin()
 
                 # ----------------- souris -----------------
@@ -433,7 +435,7 @@ class Jeu:
                     if event.button == 1:  # clic gauche
                         if hasattr(self.popup, "redraw_button_rect"):
                             if self.popup.redraw_button_rect.collidepoint(event.pos):
-                                print("Clic souris detecté")
+                                #print("Clic souris detecté")
                                 if self.joueur.dice > 0:
                                     self.joueur.dice -= 1
                                     # juste mettre à jour les pièces
